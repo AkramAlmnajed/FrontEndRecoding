@@ -10,7 +10,7 @@ const LanguageSelector = memo(() => {
   return (
     <div className="absolute top-4 right-6 z-50 flex justify-center items-center">
       <img 
-        src="/Global.png" 
+        src="/assets/Global.png" 
         alt="Language" 
         className="w-6 h-6 object-contain"
         loading="lazy"

@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 
 const FooterImages = memo(() => {
   const images = [
-    { src: "/MOSAICCOLOR.png", alt: "Mosaic", className: "w-24 h-24 object-contain" },
-    { src: "/Platform_Horizontal_Transparent.png", alt: "Platform", className: "w-72 h-24 opacity-80 object-contain" },
-    { src: "/FOUNDATION_BLACK.png", alt: "Foundation", className: "w-72 h-28 object-contain" }
+    { src: "/assets/MOSAICCOLOR.png", alt: "Mosaic", className: "w-24 h-24 object-contain" },
+    { src: "/assets/Platform_Horizontal_Transparent.png", alt: "Platform", className: "w-72 h-24 opacity-80 object-contain" },
+    { src: "/assets/FOUNDATION_BLACK.png", alt: "Foundation", className: "w-72 h-28 object-contain" }
   ];
 
   return (

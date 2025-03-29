@@ -4,8 +4,8 @@ import SubmitButton from '../FormElements/SubmitButton';
 
 const ResetPasswordForm = memo(() => (
   <>
-    <InputField type="password" icon="/Password.png" placeholder="New Password" />
-    <InputField type="password" icon="/Password.png" placeholder="Confirm New Password" />
+    <InputField type="password" icon="/assets/Password.png" placeholder="New Password" />
+    <InputField type="password" icon="/assets/Password.png" placeholder="Confirm New Password" />
 
     <SubmitButton text="Reset my Password" />
 

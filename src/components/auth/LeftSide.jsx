@@ -10,7 +10,7 @@ const LeftSide = memo(() => {
     <div className="w-1/2 flex items-center justify-center p-8 relative overflow-hidden">
       <div className="h-full w-[110%] -ml-20">
         <img
-          src="/Platform_LOGO_Trasparent.png"
+          src="/assets/Platform_LOGO_Trasparent.png"
           className="object-cover w-full h-full origin-top-left rounded-[1000px]"
           style={imageStyle}
           alt="Platform Logo"

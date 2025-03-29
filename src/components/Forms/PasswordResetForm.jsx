@@ -13,7 +13,7 @@ const PasswordResetForm = memo(() => (
 
     <InputField 
       type="email" 
-      icon="/Mail.png" 
+      icon="/assets/Mail.png" 
       placeholder="Email Address" 
     />
 

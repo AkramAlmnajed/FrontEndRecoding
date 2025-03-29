@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 const BackgroundImage = memo(() => {
   const style = {
-    backgroundImage: "url('/FOUNDATION_LOGO_BLACK.png')",
+    backgroundImage: "url('/assets/FOUNDATION_LOGO_BLACK.png')",
     opacity: 0.05,
     transform: "translateX(-10%)",
     zIndex: 0

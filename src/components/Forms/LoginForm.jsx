@@ -4,8 +4,8 @@ import SubmitButton from '../FormElements/SubmitButton';
 
 const LoginForm = memo(() => (
   <>
-    <InputField type="email" icon="/Mail.png" placeholder="Email" />
-    <InputField type="password" icon="/Password.png" placeholder="Password" />
+    <InputField type="email" icon="/assets/Mail.png" placeholder="Email" />
+    <InputField type="password" icon="/assets/Password.png" placeholder="Password" />
 
     <div className="flex justify-between items-center mb-10 text-sm">
       <label className="flex items-center space-x-2">

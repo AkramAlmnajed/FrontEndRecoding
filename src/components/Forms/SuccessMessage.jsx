@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 const SuccessMessage = memo(({ 
-  icon = "/Mark.png",
+  icon = "/assets/Mark.png",
   title,
   description,
   redirectText = "You will be redirected to the login page."

@@ -31,7 +31,7 @@ const PositionForm = memo(() => {
         <div className="mb-8">
           <div className="flex items-center border-b border-gray-300 pb-2">
             <img 
-              src="/DropDown.png"  
+              src="/assets/DropDown.png"  
               className="h-8 w-8 mr-3 opacity-40" 
               alt="Position" 
               loading="lazy"
@@ -50,7 +50,7 @@ const PositionForm = memo(() => {
         <div className="mb-8">
           <div className="flex items-center border-b border-gray-300 pb-2">
             <img 
-              src="/DropDown.png"  
+              src="/assets/DropDown.png"  
               className="h-8 w-8 mr-3 opacity-40" 
               alt="Department" 
               loading="lazy"
@@ -69,7 +69,7 @@ const PositionForm = memo(() => {
         <div className="mb-10">
           <div className="flex items-center border-b border-gray-300 pb-2">
             <img 
-              src="/DropDown.png"  // Add your layer icon
+              src="/assets/DropDown.png"  // Add your layer icon
               className="h-8 w-8 mr-3 opacity-40" 
               alt="Layer" 
               loading="lazy"

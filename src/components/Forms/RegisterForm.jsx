@@ -4,10 +4,10 @@ import SubmitButton from '../FormElements/SubmitButton';
 
 const RegisterForm = memo(() => (
   <>
-    <InputField type="text" icon="/User.png" placeholder="Full Name" />
-    <InputField type="email" icon="/Mail.png" placeholder="Email" />
-    <InputField type="password" icon="/Password.png" placeholder="Password" />
-    <InputField type="password" icon="/Password.png" placeholder="Confirm Password" />
+    <InputField type="text" icon="/assets/User.png" placeholder="Full Name" />
+    <InputField type="email" icon="/assets/Mail.png" placeholder="Email" />
+    <InputField type="password" icon="/assets/Password.png" placeholder="Password" />
+    <InputField type="password" icon="/assets/Password.png" placeholder="Confirm Password" />
 
     <div className="flex justify-between items-center mb-10 text-sm">
       <label className="flex items-center space-x-2">

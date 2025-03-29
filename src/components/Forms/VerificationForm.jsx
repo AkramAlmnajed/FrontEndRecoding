@@ -6,7 +6,7 @@ const VerificationForm = memo(() => (
   <>
     <InputField 
       type="text" 
-      icon="/VerificationCode.png"  // Make sure to add this icon
+      icon="/assets/VerificationCode.png"  // Make sure to add this icon
       placeholder="Confirmation Code" 
     />
 
