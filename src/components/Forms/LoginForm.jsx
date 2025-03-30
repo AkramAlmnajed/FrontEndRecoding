@@ -22,7 +22,6 @@ const LoginForm = memo(() => {
   });
 
   const onSubmit = (data) => {
-    console.log("Form Submitted!");
     console.log("Form Data:", data);
   };
 
