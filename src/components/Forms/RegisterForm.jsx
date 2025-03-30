@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { memo } from 'react';
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
@@ -14,8 +15,8 @@ const RegisterForm = memo(() => {
     password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords must match")
-      .required("Confirm Password is required"),
-    terms: Yup.boolean().oneOf([true], "You must agree to the terms & conditions"),
+      .required("Confirm Password"),
+    terms: Yup.boolean().oneOf([true], "*"),
   });
   const {
     register,
@@ -25,9 +26,12 @@ const RegisterForm = memo(() => {
     resolver: yupResolver(validationSchema),
     mode: "onChange",
   });
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    navigate('/position')
+
   };
 
   return (
@@ -43,11 +47,8 @@ const RegisterForm = memo(() => {
 
       <div className="flex justify-between items-center mb-10 text-sm">
         <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            className="w-4 h-4 border-gray-300 rounded"
-            aria-label="Terms and conditions"
-          />
+          <ErrorMessage message={errors.terms?.message} />
+          <input type="checkbox" className="w-4 h-4 border-gray-300 rounded" aria-label="Terms and conditions" {...register('terms')} />
           <span className="text-gray-600">I agree to terms & conditions</span>
         </label>
       </div>

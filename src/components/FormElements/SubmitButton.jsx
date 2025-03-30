@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-const SubmitButton = memo(({ text }) => (
+const SubmitButton = memo(({ text, onClick }) => (
   <button
     className="w-full py-3 text-xl font-light tracking-wide text-black mb-6 transition duration-300  "
     style={{
@@ -10,6 +10,7 @@ const SubmitButton = memo(({ text }) => (
     }}
     aria-label={text}
     type='submit'
+    onClick={onClick}
 
   >
     {text}
