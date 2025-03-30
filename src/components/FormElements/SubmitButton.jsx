@@ -9,6 +9,8 @@ const SubmitButton = memo(({ text }) => (
       borderRadius: "100px",
     }}
     aria-label={text}
+    type='submit'
+
   >
     {text}
   </button>
