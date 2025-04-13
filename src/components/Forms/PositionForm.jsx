@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import SubmitButton from '../FormElements/SubmitButton';
 import ErrorMessage from '../FormElements/error_message';
 
-const PositionForm = memo(() => {
+const PositionForm = memo(({ buttonText, onSubmit, title }) => {
 
   const schema = Yup.object().shape({
     position: Yup.string().required('*'),
@@ -16,10 +16,6 @@ const PositionForm = memo(() => {
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
-
-  const onSubmit = (data) => {
-    console.log('Form Data:', data);
-  };
 
   const positions = [
     { value: '', label: 'Select Position' },
@@ -43,8 +39,10 @@ const PositionForm = memo(() => {
   ];
 
   return (
-    <div className="w-full max-w-[400px] px-8 z-50 ">
-
+    <div className="w-full max-w-[400px] ">
+      <h1 className="text-[30px] font-light font-oswald mb-7 tracking-tight leading-none">
+        {title}
+      </h1>
       {/* Position Dropdown */}
       <div className="mb-8">
         <div className="flex items-center border-b border-gray-300 pb-2">
@@ -123,7 +121,7 @@ const PositionForm = memo(() => {
         </div>
       </div>
 
-      <SubmitButton onClick={handleSubmit(onSubmit)} text="Complete the registration" />
+      <SubmitButton onClick={handleSubmit(onSubmit)} text={buttonText} />
     </div>
   );
 });

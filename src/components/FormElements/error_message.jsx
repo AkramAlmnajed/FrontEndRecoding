@@ -5,10 +5,10 @@ const ErrorMessage = memo(({ message }) => {
 
     return (
         <p
-            className="text-xl font-light text-red-500 mb-2 transition duration-300"
+            className=" font-light text-red-500 transition duration-300 mb-[1rem]"
             style={{
                 color: 'red',
-                fontSize: '1rem',
+                fontSize: '0.8rem',
                 height: '1rem'
             }}
             aria-label="Error message"

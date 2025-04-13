@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 const InputField = memo(({ type, icon, placeholder, ...props }, ref) => (
-  <div className="mb-8">
+  <div className="mb-7">
     <div className="flex items-center border-b border-gray-300 pb-2">
       <img
         src={icon}

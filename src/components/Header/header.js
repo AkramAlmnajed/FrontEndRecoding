@@ -1,7 +1,11 @@
-import React from "react";
 import { Icon } from "@iconify/react";
+import React from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300">
       {/* Left Side - Logos */}
@@ -66,6 +70,7 @@ const Header = () => {
           <Icon
             icon="mdi:cog-outline"
             className="text-2xl cursor-pointer hover:text-gray-900"
+            onClick={() => navigate('/settings')}
           />
         </div>
       </div>

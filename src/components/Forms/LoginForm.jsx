@@ -1,29 +1,35 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { memo } from 'react';
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
 import ErrorMessage from "../FormElements/error_message";
+
+
+
 
 const LoginForm = memo(() => {
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email format").required("Email is required"),
     password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
   });
-  const {register, handleSubmit,formState: { errors },} = useForm({
+  const { register, handleSubmit, formState: { errors }, } = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onChange"
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    navigate('/map')
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <InputField type='email' icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
+      <InputField icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
       <ErrorMessage message={errors.email?.message} />
       <InputField type="password" icon="/assets/Password.png" placeholder="Password"  {...register("password")} />
       <ErrorMessage message={errors.password?.message} />
