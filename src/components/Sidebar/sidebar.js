@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Icon } from "@iconify/react";
 
 const aspectSubAspectMapping = {
   "Culture & Heritage": [
@@ -80,7 +81,6 @@ const aspectSubAspectMapping = {
 };
 
 const Sidebar = () => {
-  
   const [aspect, setAspect] = useState("");
   const [subAspects, setSubAspects] = useState([]);
   const [selectedSubAspect, setSelectedSubAspect] = useState("");
@@ -299,12 +299,12 @@ const Sidebar = () => {
             className="absolute left-2 h-4 w-4"
           />
           <input
-            type="image"
+            type="file"
             className="relative flex items-center mt-2"
-            alt=""
             id="upload"
             accept="image/*"
             placeholder="Upload Image"
+            style={{ display: "none" }} // Hides the default file input
           />
 
           <label
@@ -313,16 +313,25 @@ const Sidebar = () => {
           >
             Upload Image
           </label>
+          <div>
+            <button
+              onClick={() => document.getElementById("upload").click()}
+              className="absolute right-2 p-2 rounded cursor-pointer"
+              style={{ backgroundColor: "white", color: "grey", display: "flex", alignItems: "flex-start", gap: "5px"  }} 
+            >
+              <Icon icon="mdi:upload" style={{ fontSize: "12px",position:"relative", top: "-5px" }} />{" "}
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div className="flex space-x-2 mt-3">
-          <button className="flex-1 py-2 bg-cyan-600 text-white rounded-full text-sm hover:bg-cyan-700">
-            Create
-          </button>
-          <button className="flex-1 py-2 border border-cyan-600 text-cyan-600 rounded-full text-sm hover:bg-cyan-50">
-            Cancel
-          </button>
-        </div>
+      <div className="flex space-x-2 mt-3 " style={{ marginTop: "30px" }}>
+        <button className="flex-1 py-2 bg-cyan-600 text-white rounded-full text-sm hover:bg-cyan-700">
+          Create
+        </button>
+        <button className="flex-1 py-2 border border-cyan-600 text-cyan-600 rounded-full text-sm hover:bg-cyan-50">
+          Cancel
+        </button>
       </div>
     </aside>
   );
