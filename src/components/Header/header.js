@@ -1,10 +1,20 @@
 import React from "react";
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleUserClick = () => {
+    navigate("/profile");
+  };
+
+  const handleSettingsClick = () => {
+      navigate("/control-panel");
+     };
+
   return (
     <header className="flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300">
-      {/* Left Side - Logos */}
       <div className="flex items-center space-x-6">
         <img
           src="/assets/MOSAICCOLOR.png"
@@ -33,7 +43,13 @@ const Header = () => {
             className="h-6 w-6 rounded-full"
           />
 
-          <span className="text-gray-700 font-medium">Jehad Alghmyan</span>
+          <span
+            onClick={handleUserClick}
+            className="text-gray-700 font-medium cursor-pointer hover:underline"
+          >
+            Jehad Alghamyan
+          </span>
+
           <img
             src="/assets/DropDown.png"
             alt="User Avatar"
@@ -43,10 +59,6 @@ const Header = () => {
         <div className="border-l border-gray-300 h-6"></div>
 
         <div className="flex items-center space-x-2 text-gray-600">
-          {/* <Icon
-            icon="mdi:globe"
-            className="text-xl cursor-pointer hover:text-gray-900"
-          /> */}
           <img
             src="/assets/Global.png"
             alt="User Avatar"
@@ -66,6 +78,7 @@ const Header = () => {
           <Icon
             icon="mdi:cog-outline"
             className="text-2xl cursor-pointer hover:text-gray-900"
+            onClick={handleSettingsClick}
           />
         </div>
       </div>
