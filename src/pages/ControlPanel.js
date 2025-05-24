@@ -2,6 +2,8 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import Header from "../components/Header/header";
+import ModalAddUser from "../components/PopUp/AddUser";
+import { useState } from "react";
 
 const usersData = [
   {
@@ -39,6 +41,18 @@ const usersData = [
 ];
 
 export default function ControlPanel() {
+
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
         <Header />
@@ -52,9 +66,12 @@ export default function ControlPanel() {
               All Users:{" "}
               <span className="font-medium text-gray-900">{usersData.length}</span>
             </span>
-            <button className="px-4 py-2 text-sm border border-blue-400 text-blue-500 rounded-full hover:bg-blue-50">
+            <button className="px-4 py-2 text-sm border border-blue-400 text-blue-500 rounded-full hover:bg-blue-50"
+           onClick={handleOpenModal} >
               Add User
             </button>
+                  <ModalAddUser show={modalVisible} onClose={handleCloseModal} />
+
           </div>
 
           <div className="overflow-x-auto">
