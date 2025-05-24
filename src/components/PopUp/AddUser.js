@@ -33,7 +33,7 @@ const ModalAddUser = ({ show, onClose }) => {
     reset(); 
     onClose(); 
   };
-
+ if (!show) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
@@ -81,7 +81,7 @@ const ModalAddUser = ({ show, onClose }) => {
           <div className="mb-4">
             <select {...register("department")} className="...">
               <option>Select department</option>
-              <option>Public Health</option>
+              <option>Research</option>
               <option>IT</option>
             </select>
             <ErrorMessage message={errors.department?.message} />
