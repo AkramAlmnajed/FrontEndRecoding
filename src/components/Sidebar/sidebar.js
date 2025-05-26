@@ -1,15 +1,16 @@
-import React from "react";
-import { useState } from "react";
-import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
+import MarkerForm from "../Forms/MarkerForm";
+import { useUser } from '../context/UserProvider';
 
 const aspectSubAspectMapping = {
-  "Culture & Heritage": [
+
+  "Culture and heritage": [
     "Identity",
     "Layers of the City",
     "Tangible Heritage",
     "Intangible Heritage",
   ],
-  "Building code & Policy": [
+  "building code": [
     "Ownership Rights",
     " Safety Standards",
     "Structural Integrity",
@@ -18,7 +19,7 @@ const aspectSubAspectMapping = {
     "Health & Sanitation",
     " Adaptability & Resilience",
   ],
-  "Economic Factor": [
+  "economic factor": [
     "International Aid",
     " Employment Development",
     "Economic Diversification",
@@ -26,7 +27,7 @@ const aspectSubAspectMapping = {
     "Financial Insecurity",
   ],
 
-  "Public Health": [
+  "public health": [
     "Health Care System",
     "Physical Health & Disability",
     "Disease Management",
@@ -34,14 +35,14 @@ const aspectSubAspectMapping = {
     "Medication",
     "Psych & Mental Health",
   ],
-  "Resources Management": [
+  "resources management": [
     "Capacity building",
     " Water Resources",
     "Food insecurity ",
     " Material Resources ",
     "Energy Resources ",
   ],
-  "Urban planning": [
+  "urban planning": [
     "Public Spaces",
     "Amenities",
     "Housing & Building",
@@ -51,18 +52,18 @@ const aspectSubAspectMapping = {
     "Urban Transformation",
     "Network & Mobility",
   ],
-  "Data Collection & Analysis": [
+  "data collection and analysis": [
     "Official Statistics",
     " Research Tools",
     " Mapping Tools",
   ],
-  "Technology & Digital Infrastructure": [
+  "technology and infrastructure": [
     "Social Networking",
     "Online Platforms",
     " Hi-Technology & AI",
     "Digital Connectivity",
   ],
-  "Ecological Factor": [
+  "ecological factor": [
     "Green Spaces",
     "Waste Management",
     " Water & Air Quality",
@@ -70,7 +71,7 @@ const aspectSubAspectMapping = {
     " Natural Disaster",
     "Agriculture",
   ],
-  "Social Factor": [
+  "social factor": [
     "Civil Peace",
     "Immigration",
     "Local Community",
@@ -80,34 +81,36 @@ const aspectSubAspectMapping = {
   ],
 };
 
-const Sidebar = () => {
-  const [aspect, setAspect] = useState("");
+const Sidebar = ({ showMarkerForm }) => {
+
+  const { layer } = useUser();
+  // const [aspect, setAspect] = useState("");
   const [subAspects, setSubAspects] = useState([]);
   const [selectedSubAspect, setSelectedSubAspect] = useState("");
 
-  const handleAspectChange = (e) => {
-    const input = e.target.value.trim(); // trimming spaces
-    setAspect(input);
+  // const input = e.target.value.trim(); // trimming spaces
+  // setAspect(input);
 
-    // Find matching aspect (exact match first)
-    const matched = Object.keys(aspectSubAspectMapping).find(
-      (key) => key.toLowerCase() === input.toLowerCase()
-    );
-
-    if (matched) {
-      setSubAspects(aspectSubAspectMapping[matched]);
-    } else {
-      setSubAspects([]);
+  // Find matching aspect (exact match first)
+  useEffect(() => {
+    if (layer) {
+      const matched = Object.keys(aspectSubAspectMapping).find(
+        (key) => key.toLowerCase() === layer.toLowerCase()
+      );
+      if (matched) {
+        setSubAspects(aspectSubAspectMapping[matched]);
+      } else {
+        setSubAspects([]);
+      }
     }
-    setSelectedSubAspect("");
-  };
+  }, [layer]);
 
   const handleSubAspectChange = (e) => {
     setSelectedSubAspect(e.target.value);
   };
 
   return (
-    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700">
+    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700 overflow-scroll">
       <div>
         <div className="flex items-center mb-4 space-x-2 font-light">
           <img src="/assets/Search.png" alt="Search" className="h-6 w-6" />
@@ -214,127 +217,17 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div>
-        <div className="flex items-center mb-4 space-x-2 font-light">
-          <img src="/assets/Marker.png" alt="Marker" className="h-6 w-6" />
-          <span className="text-sm">Create marker</span>
-        </div>
+      {showMarkerForm && (<MarkerForm aspect={layer}
+        subAspects={subAspects}
+        selectedSubAspect={selectedSubAspect}
+        handleSubAspectChange={handleSubAspectChange}
+        title="Create Marker"
+        ButtonText='Create'></MarkerForm>)}
 
-        <div className="relative flex items-center">
-          <img
-            src="/assets/Aspect.png"
-            alt="Icon"
-            className="absolute left-2 h-4 w-4"
-          />
-          <input
-            type="text"
-            placeholder="Aspect"
-            value={aspect}
-            onChange={handleAspectChange}
-            className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm focus:outline-none"
-          />
-        </div>
-        <div className="relative flex items-center">
-          <img
-            src="/assets/Sub-Aspect.png"
-            alt="Icon"
-            className="absolute left-2 h-7 w-4"
-          />
-          <select
-            className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm bg-transparent focus:outline-none"
-            value={selectedSubAspect}
-            onChange={handleSubAspectChange}
-            disabled={subAspects.length === 0}
-          >
-            <option value="" disabled selected={!subAspects.length}>
-              {subAspects.length ? " Sub-aspect" : "No Sub-aspects"}
-            </option>
-            {subAspects.map((subAspect, index) => (
-              <option key={index} value={subAspect}>
-                {subAspect}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="relative flex items-center">
-          <img
-            src="/assets/Category.png"
-            alt="Icon"
-            className="absolute left-2 h-4 w-4"
-          />
-          <select className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm bg-transparent focus:outline-none">
-            <option>Category</option>
-          </select>
-        </div>
-
-        <div className="relative flex items-center">
-          <img
-            src="/assets/Pen.png"
-            alt="Icon"
-            className="absolute left-2 h-4 w-4"
-          />
-          <input
-            type="text"
-            placeholder="Location name"
-            className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm focus:outline-none"
-          />
-        </div>
-
-        <div className="relative flex items-center">
-          <img
-            src="/assets/Descrip.png"
-            alt="Icon"
-            className="absolute left-2 h-4 w-4"
-          />
-          <textarea
-            placeholder="Description"
-            className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm bg-transparent focus:outline-none"
-          ></textarea>
-        </div>
-
-        <div className="relative flex items-center mt-2">
-          <img
-            src="/assets/Uplode.png"
-            alt="Upload"
-            className="absolute left-2 h-4 w-4"
-          />
-          <input
-            type="file"
-            className="relative flex items-center mt-2"
-            id="upload"
-            accept="image/*"
-            placeholder="Upload Image"
-            style={{ display: "none" }} // Hides the default file input
-          />
-
-          <label
-            htmlFor="upload"
-            className="absolute left-10 text-gray-500 text-sm mt-1 cursor-pointer"
-          >
-            Upload Image
-          </label>
-          <div>
-            <button
-              onClick={() => document.getElementById("upload").click()}
-              className="absolute right-2 p-2 rounded cursor-pointer"
-              style={{ backgroundColor: "white", color: "grey", display: "flex", alignItems: "flex-start", gap: "5px"  }} 
-            >
-              <Icon icon="mdi:upload" style={{ fontSize: "12px",position:"relative", top: "-5px" }} />{" "}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex space-x-2 mt-3 " style={{ marginTop: "30px" }}>
-        <button className="flex-1 py-2 bg-cyan-600 text-white rounded-full text-sm hover:bg-cyan-700">
-          Create
-        </button>
-        <button className="flex-1 py-2 border border-cyan-600 text-cyan-600 rounded-full text-sm hover:bg-cyan-50">
-          Cancel
-        </button>
-      </div>
     </aside>
   );
-};
+  ;
+
+}
 
 export default Sidebar;

@@ -1,21 +1,22 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
 import ControlPanel from "./pages/ControlPanel";
+import Home from "./pages/Home";
 import LoginPage from './pages/LoginPage';
 import MapPage from "./pages/MapPage";
 import PositionPage from "./pages/PositionPage";
+import Profile from "./pages/Profile";
 import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-import SettingsPage from "./pages/SettingsPage"
+import SettingsPage from "./pages/SettingsPage";
+import VerificationPage from "./pages/VerificationPage";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile/>} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/control-panel" element={<ControlPanel />} />
 
       </Routes>
@@ -36,6 +37,9 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/settings" element={<SettingsPage />} />
+      </Routes>
+      <Routes>
+        <Route path="/verify" element={<VerificationPage />} />
       </Routes>
     </Router>
   );

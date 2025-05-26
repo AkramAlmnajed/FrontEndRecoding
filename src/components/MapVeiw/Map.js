@@ -1,33 +1,47 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import * as maptilersdk from '@maptiler/sdk';
+import "@maptiler/sdk/dist/maptiler-sdk.css";
+import { useEffect, useRef } from 'react';
 
-const customIcon = new L.Icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
+maptilersdk.config.apiKey = 'eNjUSBU04MmXxL1ACa33';
 
-const MapView = () => {
-  const position = [33.5138, 36.2765]; 
+export default function MapView({ onMapClick }) {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const markerRef = useRef(null);
+
+  const center = { lng: 36.2765, lat: 33.5138 };
+  const zoom = 13;
+
+  useEffect(() => {
+    if (map.current) return;
+
+    map.current = new maptilersdk.Map({
+      container: mapContainer.current,
+      style: maptilersdk.MapStyle.STREETS,
+      center: [center.lng, center.lat],
+      zoom: zoom,
+    });
+
+    map.current.on('click', (e) => {
+      const { lng, lat } = e.lngLat;
+      console.log("Map clicked at:", lng, lat);
+      if (onMapClick) onMapClick({ lng, lat });
+
+
+      if (markerRef.current) {
+
+        markerRef.current.setLngLat([lng, lat]);
+      } else {
+        markerRef.current = new maptilersdk.Marker()
+          .setLngLat([lng, lat])
+          .addTo(map.current);
+      }
+    });
+  }, [center.lng, center.lat, zoom, onMapClick]);
 
   return (
-    <MapContainer center={position} zoom={13} style={{ height: "100vh", width: "100%" }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={position} icon={customIcon}>
-        <Popup>Damascus, Syria</Popup>
-      </Marker>
-    </MapContainer>
+    <div className="map-wrap" style={{ height: '100vh', width: '100%' }}>
+      <div ref={mapContainer} className="map" style={{ height: '100%', width: '100%' }} />
+    </div>
   );
-};
-
-export default MapView;
+}

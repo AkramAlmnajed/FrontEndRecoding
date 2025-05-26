@@ -1,11 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
 import ErrorMessage from "../FormElements/error_message";
+
 
 
 
@@ -22,9 +23,36 @@ const LoginForm = memo(() => {
 
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    navigate('/map')
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Login failed:", result);
+        alert(result.message || "Login failed. Please check your credentials.");
+        return;
+      }
+
+      console.log("Login successful:", result);
+
+
+      navigate('/map');
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
