@@ -5,7 +5,8 @@ const MarkerForm = ({
     selectedSubAspect,
     handleSubAspectChange,
     title,
-    ButtonText
+    ButtonText,
+    categories
 }) => {
     return (
         <div>
@@ -51,6 +52,11 @@ const MarkerForm = ({
                 />
                 <select className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm bg-transparent focus:outline-none">
                     <option>Category</option>
+                    {categories.map((category, index) => (
+                        <option key={index} value={category}>
+                            {category}
+                        </option>
+                    ))}
                 </select>
             </div>
 

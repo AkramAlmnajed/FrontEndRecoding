@@ -81,17 +81,27 @@ const aspectSubAspectMapping = {
   ],
 };
 
+const categoryOptions = [
+  "Residential Architecture",
+  "Interior Design",
+  "Cultural Architecture",
+  "Commercial & Offices",
+  "Public Architecture",
+  "Healthcare Architecture",
+  "Educational Architecture",
+  "Sports Architecture",
+  "Religious Architecture",
+  "Industrial & Infrastructure",
+  "Landscape & Urbanism",
+];
+
 const Sidebar = ({ showMarkerForm }) => {
 
   const { layer } = useUser();
-  // const [aspect, setAspect] = useState("");
   const [subAspects, setSubAspects] = useState([]);
   const [selectedSubAspect, setSelectedSubAspect] = useState("");
 
-  // const input = e.target.value.trim(); // trimming spaces
-  // setAspect(input);
 
-  // Find matching aspect (exact match first)
   useEffect(() => {
     if (layer) {
       const matched = Object.keys(aspectSubAspectMapping).find(
@@ -139,18 +149,11 @@ const Sidebar = ({ showMarkerForm }) => {
             <option value="" disabled selected>
               Category
             </option>
-            <option value="option1">Residential Architecure</option>
-            <option value="option2">Interior Design</option>
-            <option value="option3">Cultural Architecture</option>
-            <option value="option4">Commercial & Offices</option>
-            <option value="option5">Public architecture</option>
-            <option value="option6">Commercial & Offices</option>
-            <option value="option7">HealthCare Architecture</option>
-            <option value="option8">Educational Architecture</option>
-            <option value="option9">Sports Architecture</option>
-            <option value="option10">Religious Architecture</option>
-            <option value="option11">Industrial &Infrastructer</option>
-            <option value="option12">Landscape & Urbanism </option>
+            {categoryOptions.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex justify-center mt-4">
@@ -175,18 +178,11 @@ const Sidebar = ({ showMarkerForm }) => {
             <option value="" disabled selected>
               Category
             </option>
-            <option value="option1">Residential Architecure</option>
-            <option value="option2">Interior Design</option>
-            <option value="option3">Cultural Architecture</option>
-            <option value="option4">Commercial & Offices</option>
-            <option value="option5">Public architecture</option>
-            <option value="option6">Commercial & Offices</option>
-            <option value="option7">HealthCare Architecture</option>
-            <option value="option8">Educational Architecture</option>
-            <option value="option9">Sports Architecture</option>
-            <option value="option10">Religious Architecture</option>
-            <option value="option11">Industrial &Infrastructer</option>
-            <option value="option12">Landscape & Urbanism </option>
+            {categoryOptions.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
         <div className="relative flex items-center">
@@ -221,6 +217,7 @@ const Sidebar = ({ showMarkerForm }) => {
         subAspects={subAspects}
         selectedSubAspect={selectedSubAspect}
         handleSubAspectChange={handleSubAspectChange}
+        categories={categoryOptions}
         title="Create Marker"
         ButtonText='Create'></MarkerForm>)}
 
