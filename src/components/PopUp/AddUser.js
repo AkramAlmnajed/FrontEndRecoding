@@ -1,10 +1,9 @@
-import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import InputField from "../FormElements/InputField";
 import SubmitButton from "../FormElements/SubmitButton";
 import ErrorMessage from "../FormElements/error_message";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
 
 
 
@@ -30,10 +29,10 @@ const ModalAddUser = ({ show, onClose }) => {
 
   const onSubmit = (data) => {
     console.log("User Added:", data);
-    reset(); 
-    onClose(); 
+    reset();
+    onClose();
   };
- if (!show) return null;
+  if (!show) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div

@@ -44,8 +44,18 @@ const LoginForm = memo(() => {
         alert(result.message || "Login failed. Please check your credentials.");
         return;
       }
+      if (result.access_token) {
+        localStorage.setItem("accessToken", result.access_token);
+      } else {
+        console.error("No token found in login response.");
+        alert("Login succeeded but no token was returned.");
+        console.log("Full login response:", result);
+
+        return;
+      }
 
       console.log("Login successful:", result);
+
 
 
       navigate('/map');

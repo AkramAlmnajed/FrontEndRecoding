@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { MarkerProvider } from './components/context/MarkersContext';
 import { UserProvider } from "./components/context/UserProvider";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -10,7 +11,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
-      <App />
+      <MarkerProvider>
+        <App />
+      </MarkerProvider>
     </UserProvider>
   </React.StrictMode>
 );
