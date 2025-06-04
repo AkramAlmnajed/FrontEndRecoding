@@ -3,7 +3,6 @@ import MarkerForm from "../Forms/MarkerForm";
 import { useUser } from '../context/UserProvider';
 
 const aspectSubAspectMapping = {
-
   "Culture and heritage": [
     "Identity",
     "Layers of the City",
@@ -26,7 +25,6 @@ const aspectSubAspectMapping = {
     "Tourism",
     "Financial Insecurity",
   ],
-
   "public health": [
     "Health Care System",
     "Physical Health & Disability",
@@ -101,7 +99,6 @@ const Sidebar = ({ showMarkerForm }) => {
   const [subAspects, setSubAspects] = useState([]);
   const [selectedSubAspect, setSelectedSubAspect] = useState("");
 
-
   useEffect(() => {
     if (layer) {
       const matched = Object.keys(aspectSubAspectMapping).find(
@@ -120,7 +117,7 @@ const Sidebar = ({ showMarkerForm }) => {
   };
 
   return (
-    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700 overflow-scroll">
+    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700 overflow-scroll mt-20">
       <div>
         <div className="flex items-center mb-4 space-x-2 font-light">
           <img src="/assets/Search.png" alt="Search" className="h-6 w-6" />
@@ -213,18 +210,19 @@ const Sidebar = ({ showMarkerForm }) => {
         </div>
       </div>
 
-      {showMarkerForm && (<MarkerForm aspect={layer}
-        subAspects={subAspects}
-        selectedSubAspect={selectedSubAspect}
-        handleSubAspectChange={handleSubAspectChange}
-        categories={categoryOptions}
-        title="Create Marker"
-        ButtonText='Create'></MarkerForm>)}
-
+      {showMarkerForm && (
+        <MarkerForm
+          aspect={layer}
+          subAspects={subAspects}
+          selectedSubAspect={selectedSubAspect}
+          handleSubAspectChange={handleSubAspectChange}
+          categories={categoryOptions}
+          title="Create Marker"
+          ButtonText='Create'
+        />
+      )}
     </aside>
   );
-  ;
-
-}
+};
 
 export default Sidebar;

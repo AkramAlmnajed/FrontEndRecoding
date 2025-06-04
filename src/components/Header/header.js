@@ -9,11 +9,11 @@ const Header = () => {
   };
 
   const handleSettingsClick = () => {
-      navigate("/control-panel");
-     };
+    navigate("/control-panel");
+  };
 
   return (
-    <header className="flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300 shadow">
       <div className="flex items-center space-x-6">
         <img
           src="/assets/MOSAICCOLOR.png"

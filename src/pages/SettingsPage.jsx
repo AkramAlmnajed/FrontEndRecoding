@@ -23,8 +23,7 @@ const SettingsPage = () => {
     };
 
     return (
-
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen overflow-hidden"> 
             <Header />
             <div className="flex flex-1">
                 <SettingsSidebar onSelect={setSelectedSection} selected={selectedSection} />

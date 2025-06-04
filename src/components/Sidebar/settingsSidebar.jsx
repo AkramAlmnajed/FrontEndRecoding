@@ -1,8 +1,6 @@
-
 const SettingsSidebar = ({ onSelect, selected }) => {
     return (
-        <aside className="w-64 h-screen bg-gray-50 border-r border-gray-300  flex flex-col space-y-8 text-xl pt-[8rem] items-center ">
-
+        <aside className="w-64 h-screen bg-gray-50 border-r border-gray-300 flex flex-col space-y-8 text-xl pt-20 items-center">
             <nav className="flex flex-col space-y-12">
                 <button
                     onClick={() => onSelect('editProfile')}
