@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserProvider";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,6 +12,10 @@ const Header = () => {
   const handleSettingsClick = () => {
     navigate("/control-panel");
   };
+    navigate("/control-panel");
+  };
+
+  const { name } = useUser();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300 shadow">
@@ -46,7 +51,7 @@ const Header = () => {
             onClick={handleUserClick}
             className="text-gray-700 font-medium cursor-pointer hover:underline"
           >
-            Jehad Alghamyan
+            {name}
           </span>
 
           <img
