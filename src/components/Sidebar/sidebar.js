@@ -113,7 +113,7 @@ const Sidebar = ({ showMarkerForm, clickedMarker }) => {
   };
 
   return (
-    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700 overflow-scroll">
+    <aside className="w-64 bg-white p-4 shadow-md flex flex-col space-y-6 text-gray-700 overflow-scroll mt-4">
       <SearchMarkersForm />
 
       <FilterMarkersForm categories={categoryOptions} subAspects={subAspects} />

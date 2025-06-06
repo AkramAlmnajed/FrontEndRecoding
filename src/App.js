@@ -10,36 +10,38 @@ import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SettingsPage from "./pages/SettingsPage";
 import VerificationPage from "./pages/VerificationPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/control-panel" element={<ControlPanel />} />
-
-      </Routes>
-      <Routes>
         <Route path="/login" element={<LoginPage />} />
-      </Routes>
-      <Routes>
         <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-      <Routes>
         <Route path="/resetPass" element={<ResetPasswordPage />} />
-      </Routes>
-      <Routes>
         <Route path="/position" element={<PositionPage />} />
-      </Routes>
-      <Routes>
         <Route path="/map" element={<MapPage />} />
-      </Routes>
-      <Routes>
         <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-      <Routes>
         <Route path="/verify" element={<VerificationPage />} />
+
+        {/* المسارات المحمية */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/control-panel"
+          element={
+            <ProtectedRoute>
+              <ControlPanel />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
