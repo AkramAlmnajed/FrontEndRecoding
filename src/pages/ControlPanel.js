@@ -92,8 +92,7 @@ export default function ControlPanel() {
       await fetchUsers();
     } catch (err) {
       setToast(
-        err.response?.data?.message ||
-          "Error occurred while deleting the user."
+        err.response?.data?.message || "Error occurred while deleting the user."
       );
     } finally {
       setDeleteLoadingId(null);
@@ -243,9 +242,12 @@ export default function ControlPanel() {
                                   className="text-red-400 mb-3"
                                   width="38"
                                 />
-                                <div className="text-lg font-medium text-gray-800 mb-2">Delete user?</div>
+                                <div className="text-lg font-medium text-gray-800 mb-2">
+                                  Delete user?
+                                </div>
                                 <div className="text-sm text-gray-500 mb-5 text-center">
-                                  Are you sure you want to delete this user? This action can't be undone.
+                                  Are you sure you want to delete this user?
+                                  This action can't be undone.
                                 </div>
                                 <div className="flex gap-4">
                                   <button
@@ -263,7 +265,9 @@ export default function ControlPanel() {
                                     }}
                                     disabled={deleteLoadingId === user.id}
                                   >
-                                    {deleteLoadingId === user.id ? "Deleting..." : "Delete"}
+                                    {deleteLoadingId === user.id
+                                      ? "Deleting..."
+                                      : "Delete"}
                                   </button>
                                 </div>
                               </div>

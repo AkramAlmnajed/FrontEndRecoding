@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Icon } from "@iconify/react";
 
- const allowedPositions = [
+const allowedPositions = [
+  "Co-Head",
+  "Co-Head, Senior Leader",
+  "Corrdinator",
+  "Corrdinator, Junior Leader",
   "Head",
-  "CoHead",
-  "Senior leader",
-  "Junior leader",
-  "Volunteer"
+  "Junior",
+  "Junior Leader",
+  "Junior Leader, Corrdinator",
+  "Senior Leader",
+  "Senior Leader, Co-Head"
 ];
+
 
 
 
@@ -49,7 +55,7 @@ export default function PopoverEditUser({ user, onClose, onSaved }) {
     const token = localStorage.getItem("accessToken");
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/updatePosition/${user.id}`,
+        `http://127.0.0.1:8000/api/updatePregisterUserPosition/${user.id}`,
         { NewPosition: position }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
