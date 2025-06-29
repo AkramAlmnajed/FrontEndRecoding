@@ -1,37 +1,37 @@
+import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [layer, setLayer] = useState(() => localStorage.getItem("layer") || null);
-  const [email, setEmail] = useState(() => localStorage.getItem("email") || null);
-  const [password, setPassword] = useState(() => localStorage.getItem("password") || null);
-  const [name, setName] = useState(() => localStorage.getItem("name") || null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("accessToken");
+
 
   useEffect(() => {
-    if (layer) localStorage.setItem("layer", layer);
-    else localStorage.removeItem("layer");
-  }, [layer]);
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setUser(res.data);
+        console.log("user info :", res.data)
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    if (email) localStorage.setItem("email", email);
-    else localStorage.removeItem("email");
-  }, [email]);
-
-  useEffect(() => {
-    if (password) localStorage.setItem("password", password);
-    else localStorage.removeItem("password");
-  }, [password]);
-
-  useEffect(() => {
-    if (name) localStorage.setItem("name", name);
-    else localStorage.removeItem("name");
-  }, [name]);
+    fetchUser();
+  }, []);
 
   return (
-    <UserContext.Provider
-      value={{ layer, setLayer, password, setPassword, name, setName, email, setEmail }}
-    >
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

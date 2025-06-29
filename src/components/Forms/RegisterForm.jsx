@@ -1,6 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+<<<<<<< Updated upstream
 import { memo, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
+=======
+import { memo } from 'react';
+import { useForm } from "react-hook-form";
+>>>>>>> Stashed changes
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import { useUser } from "../context/UserProvider";
@@ -9,6 +14,7 @@ import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
 
 const RegisterForm = memo(() => {
+<<<<<<< Updated upstream
     const { setLayer, setEmail, setName, setPassword } = useUser();
     const [apiError, setApiError] = useState(""); 
     const [isLoading, setIsLoading] = useState(false); 
@@ -50,6 +56,37 @@ const RegisterForm = memo(() => {
         setIsLoading(true);
         setApiError("");
         clearErrors(); 
+=======
+  const { setEmail, setName, setPassword } = useUser();
+  const validationSchema = Yup.object().shape({
+    fullName: Yup.string().min(6, "The name must be at least 6 characters").required("Full Name is required"),
+    email: Yup.string().email("Invalid email format").required("Email is required"),
+    password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match")
+      .required("Confirm Password"),
+    terms: Yup.boolean().oneOf([true], "*"),
+
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+  });
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        name: data.fullName,
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.confirmPassword,
+      };
+>>>>>>> Stashed changes
 
         try {
             const payload = {
@@ -70,6 +107,7 @@ const RegisterForm = memo(() => {
                 credentials: "omit"
             });
 
+<<<<<<< Updated upstream
             const result = await response.json();
 
             if (!response.ok) {
@@ -128,6 +166,45 @@ const RegisterForm = memo(() => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {apiError && !errors.layer?.message && <ErrorMessage message={apiError} className="mb-4 text-center" />}
+=======
+      if (!response.ok) {
+        console.error("Registration failed:", result);
+        alert(result.message || "Registration failed. Please check your inputs.");
+      } else {
+        setName(data.fullName);
+        setEmail(data.email);
+        setPassword(data.password)
+        console.log("Registration successful:", result);
+        alert("Registration successful!");
+        navigate("/map");
+      }
+      if (result.access_token) {
+        localStorage.setItem("accessToken", result.access_token);
+      } else {
+        console.error("No token found in login response.");
+        alert("Regestration succeeded but no token was returned.");
+        console.log("Full login response:", result);
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <InputField type="text" icon="/assets/User.png" placeholder="Full Name" {...register("fullName")} />
+      <ErrorMessage message={errors.fullName?.message} />
+      <InputField type="email" icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
+      <ErrorMessage message={errors.email?.message} />
+      <InputField type="password" icon="/assets/Password.png" placeholder="Password" {...register("password")} />
+      <ErrorMessage message={errors.password?.message} />
+      <InputField type="password" icon="/assets/Password.png" placeholder="Confirm Password" {...register("confirmPassword")} />
+      <ErrorMessage message={errors.confirmPassword?.message} />
+>>>>>>> Stashed changes
 
             <InputField
                 type="text"

@@ -14,29 +14,24 @@ export const MarkerProvider = ({ children }) => {
     const [filterResults, setFilterResults] = useState([]);
     const token = localStorage.getItem("accessToken");
 
+
     //fetch markers
-    useEffect(() => {
-        const fetchMarkers = async () => {
-            try {
-                console.log("Using token:", token);
-                console.log("Request headers:", {
+    const fetchMarkers = async () => {
+        try {
+            const res = await axios.get("http://127.0.0.1:8000/api/locations", {
+                headers: {
                     Authorization: `Bearer ${token}`,
-                });
+                    Accept: "application/json",
+                },
+            });
+            setAllMarkers(res.data);
+        } catch (err) {
+            console.error("Error loading default markers:", err);
+        }
+    };
 
-                const res = await axios.get("http://127.0.0.1:8000/api/locations", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    },
-                });
-
-                setAllMarkers(res.data);
-
-            } catch (err) {
-                console.error("Error loading default markers:", err);
-            }
-        };
-
+    // Run on mount to load markers initially
+    useEffect(() => {
         fetchMarkers();
     }, []);
 
@@ -44,7 +39,6 @@ export const MarkerProvider = ({ children }) => {
     // Fetch when search query changes
     useEffect(() => {
         if (!searchQuery) return;
-        console.log("Search query changed:", searchQuery);
         const fetchMarkers = async () => {
             try {
                 const response = await axios.get("//127.0.0.1:8000/api/locations/search", {
@@ -54,10 +48,10 @@ export const MarkerProvider = ({ children }) => {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                });
 
-                console.log("API response for search:", response.data);
+                });
                 setSearchResults(response.data.locations || []);
+                setFilterResults([]);
             } catch (error) {
                 console.error("Error fetching markers:", error);
             }
@@ -68,14 +62,65 @@ export const MarkerProvider = ({ children }) => {
 
 
     // Fetch when filter query changes
-    // useEffect(() => {
-    //     if (!filterQuery) return;
-    //     fetch(`/api/filter-markers?${new URLSearchParams(filterQuery)}`)
-    //         .then(res => res.json())
-    //         .then(data => setFilterResults(data))
-    //         .catch(console.error);
-    // }, [filterQuery]);
+    useEffect(() => {
+        if (!filterQuery) return;
 
+        const fetchFilteredMarkers = async () => {
+            try {
+                const response = await axios.get(
+                    "http://127.0.0.1:8000/api/locations/filter",
+                    {
+                        params: filterQuery,
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: "application/json",
+                        },
+                    }
+                );
+
+                setFilterResults(response.data || []);
+                setSearchResults([]);
+            } catch (error) {
+                console.error("Error fetching filtered markers:", error);
+            }
+        };
+
+        fetchFilteredMarkers();
+    }, [filterQuery]);
+
+
+    //get a specific marker
+    const fetchSpecificMarker = async (id) => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/locations/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching marker by ID:", error);
+            return null;
+        }
+    };
+
+
+    //delete marker
+    const deleteMarker = async (id) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/locations/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("deleted")
+            alert("Marker deleted!");
+            await fetchMarkers();
+        } catch (error) {
+            console.error("Error deleting marker:", error);
+        }
+    };
 
     return (
         <MarkerContext.Provider
@@ -85,7 +130,10 @@ export const MarkerProvider = ({ children }) => {
                 searchResults,
                 filterResults,
                 allMarkers,
-                setAllMarkers
+                setAllMarkers,
+                fetchMarkers,
+                fetchSpecificMarker,
+                deleteMarker
             }}
         >
             {children}

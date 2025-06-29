@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserProvider";
-import { useState, useRef, useEffect } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,12 +16,12 @@ const Header = () => {
     setShowSettingsMenu((prev) => !prev);
   };
 
-const handleLogout = () => {
-  console.log("Token before removal:", localStorage.getItem("accessToken"));
-  localStorage.removeItem("accessToken");
-  console.log("Token after removal:", localStorage.getItem("accessToken"));
-  window.location.replace("/login ");
-};
+  const handleLogout = () => {
+    console.log("Token before removal:", localStorage.getItem("accessToken"));
+    localStorage.removeItem("accessToken");
+    console.log("Token after removal:", localStorage.getItem("accessToken"));
+    window.location.replace("/login ");
+  };
 
 
 
@@ -40,7 +40,7 @@ const handleLogout = () => {
   const { name } = useUser();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300 shadow">
+    <header className=" sticky top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-3 border-b border-gray-300 shadow">
       <div className="flex items-center space-x-6">
         <img
           src="/assets/MOSAICCOLOR.png"

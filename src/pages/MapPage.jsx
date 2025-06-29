@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { useState } from 'react';
 import Header from "../components/Header/header";
 import MapView from "../components/MapVeiw/Map";
 import Sidebar from "../components/Sidebar/sidebar";
+import { useMarkers } from '../components/context/MarkersContext';
 
 
 
@@ -10,15 +10,17 @@ import Sidebar from "../components/Sidebar/sidebar";
 const Home = () => {
 
     const [clickedPosition, setClickedPosition] = useState(null);
-    const [clickedMarker, setClickedMarker] = useState(null); // NEW
+    const [clickedMarker, setClickedMarker] = useState(null);
+    const { fetchSpecificMarker } = useMarkers();
 
     const handleMapClick = (position) => {
         setClickedPosition(position);
         setClickedMarker(null);
     };
-    const handleMarkerClick = (marker) => {
-        setClickedMarker(marker);
-        setClickedPosition(null); // ← Clear map click
+    const handleMarkerClick = async (marker) => {
+        const markerData = await fetchSpecificMarker(marker.id);
+        setClickedMarker(markerData);
+        setClickedPosition(null);
     };
 
 
@@ -31,7 +33,7 @@ const Home = () => {
                 <div className="flex-1">
                     <MapView onMapClick={handleMapClick} onMarkerClick={handleMarkerClick} />
                 </div>
-                <Sidebar showMarkerForm={!!clickedPosition} clickedMarker={clickedMarker} />
+                <Sidebar showMarkerForm={!!clickedPosition} clickedMarker={clickedMarker} position={clickedPosition} setPosition={setClickedPosition} setClickedMarker={setClickedMarker} />
             </div>
         </div>
     );
