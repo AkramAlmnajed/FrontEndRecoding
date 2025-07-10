@@ -48,7 +48,6 @@ export const MarkerProvider = ({ children }) => {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-
                 });
                 setSearchResults(response.data.locations || []);
                 setFilterResults([]);
@@ -59,7 +58,6 @@ export const MarkerProvider = ({ children }) => {
 
         fetchMarkers();
     }, [searchQuery]);
-
 
     // Fetch when filter query changes
     useEffect(() => {
@@ -98,6 +96,7 @@ export const MarkerProvider = ({ children }) => {
                     Accept: "application/json",
                 },
             });
+            console.log("returned marker data:", response.data)
             return response.data;
         } catch (error) {
             console.error("Error fetching marker by ID:", error);

@@ -11,7 +11,7 @@ const CreateMarkerForm = ({
 }) => {
     const [locationName, setLocationName] = useState("");
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const token = localStorage.getItem("accessToken");
     const { fetchMarkers } = useMarkers();
@@ -34,7 +34,11 @@ const CreateMarkerForm = ({
         formData.append("category_id", aspectSelection.categoryId);
         formData.append("aspect_id", aspectSelection.aspectId);
         formData.append("sub_aspect_id", aspectSelection.subAspectId);
-        if (image) formData.append("image", image);
+        if (images.length > 0) {
+            images.forEach((file) => {
+                formData.append("images[]", file);
+            });
+        }
 
         try {
             setIsSubmitting(true);
@@ -48,6 +52,7 @@ const CreateMarkerForm = ({
                     },
                 }
             );
+            console.log("Server Response:", response.data);
             alert("Marker created successfully!");
             await fetchMarkers();
         } catch (error) {
@@ -110,17 +115,15 @@ const CreateMarkerForm = ({
                     accept="image/*"
                     placeholder="Upload Image"
                     style={{ display: "none" }}
-                    onChange={(e) => setImage(e.target.files[0])}
+                    onChange={(e) => setImages(e.target.files[0])}
 
                 />
-
                 <label
                     htmlFor="upload"
                     className="absolute left-10 text-gray-500 text-sm mt-1 cursor-pointer"
                 >
                     Upload Image
                 </label>
-
 
             </div>
             <div className="flex space-x-2 mt-6">

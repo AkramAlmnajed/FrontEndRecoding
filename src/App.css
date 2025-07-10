@@ -28,10 +28,35 @@
   color: #61dafb;
 }
 
+.pulse-marker {
+  width: 20px;
+  height: 20px;
+  background: rgba(234, 24, 38, 0.7);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 0 rgba(234, 24, 38, 0.7);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

@@ -107,7 +107,7 @@ const EditMarkerForm = ({
                 aspectId: markerData?.location.aspect_id,
                 subAspectId: markerData?.location.sub_aspect_id,
                 categoryId: markerData?.location.category_id,
-                categoryName: markerData?.location.category_name
+                categoryName: markerData?.location.category_name,
             }}
                 onSelectionChange={setAspectSelection} />
 
