@@ -34,7 +34,6 @@ const Sidebar = ({ showMarkerForm, clickedMarker, position, setPosition, setClic
         <EditMarkerForm
           markerData={clickedMarker}
           onCancel={() => setClickedMarker(null)}
-
         />
 
       ) : showMarkerForm ? (

@@ -72,12 +72,6 @@ export default function SelectAspectSaC({ onSelectionChange, initialValues = {} 
         onSelectionChange({ aspectId, subAspectId, categoryId, categoryName });
     }, [aspectId, subAspectId, categoryId, categoryName, onSelectionChange]);
 
-    console.log({
-        categoryId,
-        categoryName,
-        subAspectId,
-        categoriesForSubAspect: categories[subAspectId],
-    });
 
     return (
         <div className="space-y-3">

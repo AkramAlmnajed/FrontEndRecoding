@@ -12,6 +12,7 @@ const CreateMarkerForm = ({
     const [locationName, setLocationName] = useState("");
     const [description, setDescription] = useState("");
     const [images, setImages] = useState([]);
+    const [pdfs, setPdfs] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const token = localStorage.getItem("accessToken");
     const { fetchMarkers } = useMarkers();
@@ -34,11 +35,15 @@ const CreateMarkerForm = ({
         formData.append("category_id", aspectSelection.categoryId);
         formData.append("aspect_id", aspectSelection.aspectId);
         formData.append("sub_aspect_id", aspectSelection.subAspectId);
-        if (images.length > 0) {
-            images.forEach((file) => {
-                formData.append("images[]", file);
-            });
-        }
+        images.forEach((file) => {
+            formData.append("images[]", file);
+        });
+        pdfs.forEach((file) => {
+            formData.append("references[]", file);
+        });
+
+
+
 
         try {
             setIsSubmitting(true);
@@ -48,22 +53,26 @@ const CreateMarkerForm = ({
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        "Content-Type": "multipart/form-data",
                     },
                 }
             );
-            console.log("Server Response:", response.data);
             alert("Marker created successfully!");
             await fetchMarkers();
         } catch (error) {
             console.error("Error creating marker:", error);
-            alert("Failed to create marker.");
+            if (error.response?.data?.errors) {
+                console.log("Validation Errors:", error.response.data.errors);
+                alert(JSON.stringify(error.response.data.errors, null, 2));
+            } else {
+                alert("Failed to create marker.");
+            }
         }
     };
 
 
+
     return (
-        <div>
+        <div calssName="flex-col">
             <div className="flex items-center mb-4 space-x-2 font-light">
                 <img src="/assets/Marker.png" alt="Marker" className="h-6 w-6" />
                 <span className="text-sm">Create Marker</span>
@@ -102,10 +111,9 @@ const CreateMarkerForm = ({
                 ></textarea>
             </div>
 
-            <div className="relative flex items-center mt-2">
+            <div className="relative flex items-center mt-6 mb-3">
                 <img
                     src="/assets/Uplode.png"
-                    alt="Upload"
                     className="absolute left-2 h-4 w-4"
                 />
                 <input
@@ -113,10 +121,12 @@ const CreateMarkerForm = ({
                     className="relative flex items-center mt-2"
                     id="upload"
                     accept="image/*"
+                    multiple
                     placeholder="Upload Image"
                     style={{ display: "none" }}
-                    onChange={(e) => setImages(e.target.files[0])}
-
+                    onChange={(e) => {
+                        setImages(Array.from(e.target.files));
+                    }}
                 />
                 <label
                     htmlFor="upload"
@@ -124,9 +134,52 @@ const CreateMarkerForm = ({
                 >
                     Upload Image
                 </label>
+                {images.length > 0 && (
+                    <ul className="text-sm text-gray-600 ml-10 mt-1 list-disc">
+                        {images.map((img, index) => (
+                            <li key={index}>{img.name}</li>
+                        ))}
+                    </ul>
+                )}
+
 
             </div>
-            <div className="flex space-x-2 mt-6">
+
+            <div className="relative flex flex-col mt-4 mb-8 items-center">
+                <img
+                    src="/assets/Uplode.png"
+                    className="absolute left-2 h-4 w-4"
+                />
+                <input
+                    type="file"
+                    className="relative flex items-center mt-2 mb-4"
+                    id="upload-pdf"
+                    accept="application/pdf"
+                    multiple
+                    placeholder="Upload Pdf"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                        console.log("raw selected:", e.target.files);
+                        setPdfs(Array.from(e.target.files));
+                    }}
+                />
+                <label
+                    htmlFor="upload-pdf"
+                    className="absolute left-10 text-gray-500 text-sm mt-1 mb-4 cursor-pointer"
+                >
+                    Upload Pdf
+                </label>
+                {pdfs.length > 0 && (
+                    <ul className="text-sm text-gray-600 ml-10 mt-1 list-disc">
+                        {pdfs.map((pdf, index) => (
+                            <li key={index}>{pdf.name}</li>
+                        ))}
+                    </ul>
+                )}
+
+
+            </div>
+            <div className="flex space-x-2 mt-10">
                 <button
                     className={`flex-1 py-2 rounded-full text-sm ${isSubmitting
                         ? "bg-gray-400 text-white cursor-not-allowed"

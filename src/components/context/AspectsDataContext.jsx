@@ -19,7 +19,6 @@ export const AspectDataProvider = ({ children }) => {
 
     const fetchAspects = useCallback(async () => {
         try {
-            console.log("fetching aspects")
             setLoading(true);
             const response = await axios.get("http://127.0.0.1:8000/api/aspects", {
                 headers: {
@@ -27,7 +26,6 @@ export const AspectDataProvider = ({ children }) => {
                     Accept: "application/json",
                 }
             });
-            console.log("Aspects response:", response.data)
             setAspects(response.data);
         } catch (err) {
             setError("Failed to load aspects.");
@@ -42,7 +40,6 @@ export const AspectDataProvider = ({ children }) => {
         if (subAspects[aspectId]) return;
 
         try {
-            console.log("fetching SubAspects")
             const response = await axios.get(`http://127.0.0.1:8000/api/sub-aspects/${aspectId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -61,7 +58,6 @@ export const AspectDataProvider = ({ children }) => {
         if (categories[subAspectId]) return;
 
         try {
-            console.log("fetching Categories")
             const response = await axios.get(`http://127.0.0.1:8000/api/categories/${subAspectId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,

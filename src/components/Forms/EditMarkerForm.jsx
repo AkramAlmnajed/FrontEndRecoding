@@ -6,11 +6,12 @@ import SelectAspectSaC from "./SelectAspect";
 
 const EditMarkerForm = ({
     onCancel,
-    markerData
+    markerData,
 }) => {
     const [locationName, setLocationName] = useState("");
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
+    const [pdfs, setPdfs] = useState([]);
     const [aspectSelection, setAspectSelection] = useState({
         aspectId: "",
         subAspectId: "",
@@ -23,7 +24,6 @@ const EditMarkerForm = ({
 
     useEffect(() => {
         if (markerData) {
-            console.log("marker's data:", markerData)
             setLocationName(markerData.location.name || "");
             setDescription(markerData.location.description || "");
             setAspectSelection({
@@ -141,32 +141,7 @@ const EditMarkerForm = ({
                 ></textarea>
             </div>
 
-            <div className="relative flex items-center mt-2">
-                <img
-                    src="/assets/Uplode.png"
-                    alt="Upload"
-                    className="absolute left-2 h-4 w-4"
-                />
-                <input
-                    type="file"
-                    className="relative flex items-center mt-2"
-                    id="upload"
-                    accept="image/*"
-                    placeholder="Upload Image"
-                    style={{ display: "none" }}
-                    onChange={(e) => setImage(e.target.files[0])}
 
-                />
-
-                <label
-                    htmlFor="upload"
-                    className="absolute left-10 text-gray-500 text-sm mt-1 cursor-pointer"
-                >
-                    Upload Image
-                </label>
-
-
-            </div>
             <div className="flex space-x-2 mt-6">
                 <button className="flex-1 py-2 bg-cyan-600 text-white rounded-full text-sm hover:bg-cyan-700"
                     onClick={handleEdit}>

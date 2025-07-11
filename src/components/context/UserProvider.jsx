@@ -18,7 +18,6 @@ export const UserProvider = ({ children }) => {
           }
         });
         setUser(res.data);
-        console.log("user info :", res.data)
       } catch (error) {
         console.error("Failed to fetch user info:", error);
         setUser(null);
