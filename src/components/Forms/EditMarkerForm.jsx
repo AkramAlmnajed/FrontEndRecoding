@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { useMarkers } from '../context/MarkersContext';
 import SelectAspectSaC from "./SelectAspect";
 
-
- const EditMarkerForm = ({
+const EditMarkerForm = ({
   onCancel,
   markerData,
+  onViewDetails
 }) => {
   const [locationName, setLocationName] = useState("");
   const [description, setDescription] = useState("");
@@ -100,6 +100,12 @@ import SelectAspectSaC from "./SelectAspect";
     }
   };
 
+  const handleViewDetailsClick = () => {
+    if (markerData?.location?.id && onViewDetails) {
+      onViewDetails(markerData.location.id);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4 font-light">
@@ -119,6 +125,16 @@ import SelectAspectSaC from "./SelectAspect";
           />
         </button>
       </div>
+
+      {/* View Details Button */}
+      <button
+        onClick={handleViewDetailsClick}
+        className="w-full mb-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+        disabled={isSubmitting}
+      >
+        <Icon icon="mdi:eye" className="inline mr-1" />
+        View Details
+      </button>
 
       <SelectAspectSaC 
         initialValues={{

@@ -3,26 +3,29 @@ import { Icon } from "@iconify/react";
 import Header from "../components/Header/header";
 import MapView from "../components/MapVeiw/Map";
 import Sidebar from "../components/Sidebar/sidebar";
+import ViewDetailsDialog from "../components/Forms/ViewDetailsDialog";
 import { useMarkers } from '../components/context/MarkersContext';
 
 const Home = () => {
   const [clickedPosition, setClickedPosition] = useState(null);
   const [clickedMarker, setClickedMarker] = useState(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [selectedLocationId, setSelectedLocationId] = useState(null);
 
   const { fetchSpecificMarker } = useMarkers();
 
   const handleMapClick = (position) => {
     setClickedPosition(position);
     setClickedMarker(null);
-    setSidebarOpen(true); // open sidebar when clicking on map
+    setSidebarOpen(true);
   };
 
   const handleMarkerClick = async (marker) => {
     const markerData = await fetchSpecificMarker(marker.id);
     setClickedMarker(markerData);
     setClickedPosition(null);
-    setSidebarOpen(true); // open sidebar when clicking a marker
+    setSidebarOpen(true);
   };
 
   const handleSidebarClose = () => {
@@ -31,9 +34,15 @@ const Home = () => {
     setClickedPosition(null);
   };
 
-   <button className="fixed bottom-6 right-6 z-50 md:hidden bg-cyan-600 text-white rounded-full p-4 shadow-lg" onClick={() => setSidebarOpen(true)}>
-     <Icon icon="mdi:menu" className="text-2xl" />
-   </button>
+  const handleViewDetails = (locationId) => {
+    setSelectedLocationId(locationId);
+    setShowDetailsDialog(true);
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setShowDetailsDialog(false);
+    setSelectedLocationId(null);
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -48,10 +57,26 @@ const Home = () => {
           position={clickedPosition}
           setPosition={setClickedPosition}
           setClickedMarker={setClickedMarker}
-          isOpen={isSidebarOpen}           // <-- PASS THIS
-          onClose={handleSidebarClose}     // <-- PASS THIS
+          isOpen={isSidebarOpen}
+          onClose={handleSidebarClose}
+          onViewDetails={handleViewDetails}
         />
       </div>
+
+      {/* Floating button for mobile */}
+      <button 
+        className="fixed bottom-6 right-6 z-50 md:hidden bg-cyan-600 text-white rounded-full p-4 shadow-lg" 
+        onClick={() => setSidebarOpen(true)}
+      >
+        <Icon icon="mdi:menu" className="text-2xl" />
+      </button>
+
+      {/* View Details Dialog - floating over the map */}
+      <ViewDetailsDialog
+        isOpen={showDetailsDialog}
+        onClose={handleCloseDetailsDialog}
+        locationId={selectedLocationId}
+      />
     </div>
   );
 };

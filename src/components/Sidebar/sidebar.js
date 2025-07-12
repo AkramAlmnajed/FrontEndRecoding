@@ -12,7 +12,8 @@ const Sidebar = ({
   setPosition,
   setClickedMarker,
   isOpen,
-  onClose
+  onClose,
+  onViewDetails
 }) => {
   const [filterSelection, setFilterSelection] = useState({
     aspectId: "",
@@ -73,6 +74,7 @@ const Sidebar = ({
                 setClickedMarker(null);
                 onClose();
               }}
+              onViewDetails={onViewDetails}
             />
           ) : showMarkerForm ? (
             <CreateMarkerForm
