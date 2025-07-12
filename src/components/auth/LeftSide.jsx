@@ -14,7 +14,7 @@ const LeftSide = memo(() => {
   }, []);
 
   return (
-    <div className="w-1/2 flex items-center justify-center p-8 relative overflow-hidden">
+    <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 relative overflow-hidden">
       <div
         className="h-full w-[90%] -ml-96 flex items-center justify-center"
         style={{

@@ -127,48 +127,57 @@ const ModalAddUser = ({ show, onClose }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
       <div
         className="fixed inset-0 bg-black opacity-50"
         onClick={onClose}
       ></div>
-      <div className="bg-white rounded-lg shadow-lg w-96 p-6 z-10">
-        <h2 className="text-3xl font-light mb-7">Add a user</h2>
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 z-10 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-2xl md:text-3xl font-light mb-6 md:mb-7">Add a user</h2>
 
         {apiError && (
-          <div className="bg-red-100 text-red-700 p-2 rounded mb-3 text-center">{apiError}</div>
+          <div className="bg-red-100 text-red-700 p-3 rounded mb-3 text-center text-sm">{apiError}</div>
         )}
         {successMessage && (
-          <div className="bg-green-100 text-green-700 p-2 rounded mb-3 text-center">{successMessage}</div>
+          <div className="bg-green-100 text-green-700 p-3 rounded mb-3 text-center text-sm">{successMessage}</div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <InputField
-            type="text"
-            icon="/assets/User.png"
-            placeholder="Name"
-            {...register("name")}
-          />
-          <ErrorMessage message={errors.name?.message} />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <InputField
+              type="text"
+              icon="/assets/User.png"
+              placeholder="Name"
+              {...register("name")}
+            />
+            <ErrorMessage message={errors.name?.message} />
+          </div>
 
-          <InputField
-            type="email"
-            icon="/assets/Mail.png"
-            placeholder="Email"
-            {...register("email")}
-          />
-          <ErrorMessage message={errors.email?.message} />
+          <div>
+            <InputField
+              type="email"
+              icon="/assets/Mail.png"
+              placeholder="Email"
+              {...register("email")}
+            />
+            <ErrorMessage message={errors.email?.message} />
+          </div>
 
-          <InputField
-            type="password"
-            icon="/assets/Password.png"
-            placeholder="Password"
-            {...register("password")}
-          />
-          <ErrorMessage message={errors.password?.message} />
+          <div>
+            <InputField
+              type="password"
+              icon="/assets/Password.png"
+              placeholder="Password"
+              {...register("password")}
+            />
+            <ErrorMessage message={errors.password?.message} />
+          </div>
 
-          <div className="mb-4">
-            <select {...register("position")} className="w-full border rounded px-3 py-2">
+          <div>
+            <select 
+              {...register("position")} 
+              className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
               <option>Select position</option>
               {allowedPositions.map((pos) => (
                 <option key={pos} value={pos}>
@@ -179,8 +188,11 @@ const ModalAddUser = ({ show, onClose }) => {
             <ErrorMessage message={errors.position?.message} />
           </div>
 
-          <div className="mb-4">
-            <select {...register("department")} className="w-full border rounded px-3 py-2">
+          <div>
+            <select 
+              {...register("department")} 
+              className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
               <option>Select department</option>
               {allowedDepartments.map((dept) => (
                 <option key={dept} value={dept}>
@@ -191,8 +203,11 @@ const ModalAddUser = ({ show, onClose }) => {
             <ErrorMessage message={errors.department?.message} />
           </div>
 
-          <div className="mb-4">
-            <select {...register("layer")} className="w-full border rounded px-3 py-2">
+          <div>
+            <select 
+              {...register("layer")} 
+              className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
               <option>Select layer</option>
               {allowedLayers.map((layer) => (
                 <option key={layer} value={layer}>
@@ -203,7 +218,9 @@ const ModalAddUser = ({ show, onClose }) => {
             <ErrorMessage message={errors.layer?.message} />
           </div>
 
-          <SubmitButton text={loading ? "Adding..." : "Add"} disabled={loading} />
+          <div className="pt-2">
+            <SubmitButton text={loading ? "Adding..." : "Add"} disabled={loading} />
+          </div>
         </form>
       </div>
     </div>

@@ -28,7 +28,7 @@ export default function ControlPanel() {
   const [error, setError] = useState(null);
   const [deleteLoadingId, setDeleteLoadingId] = useState(null);
   const [editUser, setEditUser] = useState(null);
-  const [toast, setToast] = useState(""); // إشعار بسيط
+  const [toast, setToast] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -133,17 +133,17 @@ export default function ControlPanel() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <Toast message={toast} onClose={() => setToast("")} />
-      <div className="max-w-7xl mx-auto p-8">
-        <h1 className="text-5xl font-light mb-14">Control Panel:</h1>
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
+        <h1 className="text-3xl md:text-5xl font-light mb-8 md:mb-14">Control Panel:</h1>
 
         <div className="bg-white rounded-xl shadow">
-          <div className="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
-            <span className="text-gray-600">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 p-4 mb-4 gap-4">
+            <span className="text-gray-600 text-sm md:text-base">
               All Users:{" "}
               <span className="font-medium text-gray-900">{totalUsers}</span>
             </span>
             <button
-              className="px-4 py-2 text-sm border border-blue-400 text-blue-500 rounded-full hover:bg-blue-50"
+              className="px-4 py-2 text-sm border border-blue-400 text-blue-500 rounded-full hover:bg-blue-50 w-full sm:w-auto"
               onClick={handleOpenModal}
             >
               Add User
@@ -157,7 +157,8 @@ export default function ControlPanel() {
             <div className="p-8 text-center text-red-500">{error}</div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full text-left table-fixed">
                   <thead>
                     <tr className="text-gray-500 text-sm font-medium">
@@ -279,17 +280,143 @@ export default function ControlPanel() {
                   </tbody>
                 </table>
               </div>
-              <div className="flex flex-col md:flex-row justify-between items-center pt-4 mt-8 gap-4">
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden space-y-4 p-4">
+                {usersData.map((user, idx) => (
+                  <div
+                    key={user.id || idx}
+                    className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+                          <Icon icon="mdi:account" width="24" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                          <p className="text-sm text-gray-600">{user.email}</p>
+                        </div>
+                      </div>
+                      <input type="checkbox" className="mt-1" />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                      <div>
+                        <span className="text-gray-500">Position:</span>
+                        <p className="font-medium text-gray-900 mt-1">{user.position}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Department:</span>
+                        <p className="font-medium text-gray-900 mt-1">{user.department}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Layer:</span>
+                        <p className="font-medium text-gray-900 mt-1">{user.layer}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Status:</span>
+                        <span
+                          className={
+                            "inline-block py-1 px-3 rounded-full text-xs font-bold mt-1 " +
+                            (user.status === "Active"
+                              ? "bg-green-100 text-green-800"
+                              : user.status === "Pause"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800")
+                          }
+                        >
+                          {user.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end space-x-4 pt-3 border-t border-gray-200">
+                      <button
+                        className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-medium"
+                        onClick={() => setEditUser(user)}
+                      >
+                        <Icon icon="mdi:pencil" width="18" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        className={`flex items-center space-x-2 text-red-600 hover:text-red-800 font-medium ${
+                          deleteLoadingId === user.id
+                            ? "opacity-50 pointer-events-none"
+                            : ""
+                        }`}
+                        onClick={() => setConfirmDeleteId(user.id)}
+                      >
+                        <Icon icon="mdi:delete-outline" width="18" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+
+                    {editUser && editUser.id === user.id && (
+                      <PopoverEditUser
+                        user={editUser}
+                        onClose={() => setEditUser(null)}
+                        onSaved={fetchUsers}
+                      />
+                    )}
+                    {confirmDeleteId === user.id && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <div
+                          className="fixed inset-0 bg-black/40"
+                          onClick={() => setConfirmDeleteId(null)}
+                        />
+                        <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm flex flex-col items-center z-10 border">
+                          <Icon
+                            icon="mdi:alert-circle"
+                            className="text-red-400 mb-3"
+                            width="38"
+                          />
+                          <div className="text-lg font-medium text-gray-800 mb-2 text-center">
+                            Delete user?
+                          </div>
+                          <div className="text-sm text-gray-500 mb-5 text-center">
+                            Are you sure you want to delete this user?
+                            This action can't be undone.
+                          </div>
+                          <div className="flex gap-3 w-full">
+                            <button
+                              className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded font-medium text-gray-600 border border-gray-200"
+                              onClick={() => setConfirmDeleteId(null)}
+                              disabled={deleteLoadingId === user.id}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded text-white font-semibold shadow transition"
+                              onClick={() => {
+                                setConfirmDeleteId(null);
+                                handleDeleteUser(user.id);
+                              }}
+                              disabled={deleteLoadingId === user.id}
+                            >
+                              {deleteLoadingId === user.id
+                                ? "Deleting..."
+                                : "Delete"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col md:flex-row justify-between items-center pt-4 mt-8 gap-4 px-4">
                 <div className="text-gray-500 text-sm">
                   Showing {(currentPage - 1) * perPage + 1}-
                   {(currentPage - 1) * perPage + usersData.length} of{" "}
                   {totalUsers}
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center flex-wrap justify-center gap-1">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 mx-1 disabled:opacity-50"
+                    className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 disabled:opacity-50"
                   >
                     <Icon icon="mdi:chevron-left" width="22" />
                   </button>
@@ -297,20 +424,21 @@ export default function ControlPanel() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === lastPage}
-                    className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 mx-1 disabled:opacity-50"
+                    className="px-3 py-1 rounded-full bg-gray-200 text-gray-700 disabled:opacity-50"
                   >
                     <Icon icon="mdi:chevron-right" width="22" />
                   </button>
                 </div>
-                <div className="text-gray-500 text-sm">
-                  Users per page{" "}
+                <div className="text-gray-500 text-sm flex items-center gap-2">
+                  <span className="hidden sm:inline">Users per page</span>
+                  <span className="sm:hidden">Per page</span>
                   <select
                     value={perPage}
                     onChange={(e) => {
                       setPerPage(Number(e.target.value));
                       setCurrentPage(1);
                     }}
-                    className="bg-transparent border border-gray-200 text-sm text-gray-700 rounded px-2 py-1 ml-2"
+                    className="bg-transparent border border-gray-200 text-sm text-gray-700 rounded px-2 py-1"
                   >
                     {[10, 25, 50].map((n) => (
                       <option key={n} value={n}>

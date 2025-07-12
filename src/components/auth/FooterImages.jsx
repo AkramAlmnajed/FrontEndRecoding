@@ -8,16 +8,16 @@ const FooterImages = memo(() => {
   ];
 
   return (
-    <div className="w-full flex justify-center space-x-8 pb-8">
+    <div className="w-full flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 pb-4 md:pb-8 px-4">
       <div className="flex items-center">
-        <img {...images[0]} loading="lazy" />
-        <div className="h-24 border-l border-gray-300 mx-4"></div>
+        <img {...images[0]} loading="lazy" className="w-16 h-16 md:w-24 md:h-24 object-contain" />
+        <div className="h-16 md:h-24 border-l border-gray-300 mx-2 md:mx-4"></div>
       </div>
       <div className="flex items-center">
-        <img {...images[1]} loading="lazy" />
-        <div className="h-24 border-l border-gray-300 mx-4"></div>
+        <img {...images[1]} loading="lazy" className="w-48 h-16 md:w-72 md:h-24 opacity-80 object-contain" />
+        <div className="h-16 md:h-24 border-l border-gray-300 mx-2 md:mx-4"></div>
       </div>
-      <img {...images[2]} loading="lazy" />
+      <img {...images[2]} loading="lazy" className="w-48 h-20 md:w-72 md:h-28 object-contain" />
     </div>
   );
 });

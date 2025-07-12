@@ -10,7 +10,6 @@ import ErrorMessage from "../FormElements/error_message";
 const LoginForm = memo(() => {
   const navigate = useNavigate();
 
-  
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email format")
@@ -20,7 +19,6 @@ const LoginForm = memo(() => {
       .required("Password is required"),
   });
 
-  
   const {
     register,
     handleSubmit,
@@ -42,13 +40,11 @@ const LoginForm = memo(() => {
       const result = await response.json();
 
       if (!response.ok) {
-       
         const serverMsg = result.message || "Login failed";
         setError("root.serverError", { type: "server", message: serverMsg });
         return;
       }
 
-   
       if (result.access_token) {
         localStorage.setItem("accessToken", result.access_token);
         navigate("/map");
@@ -66,7 +62,7 @@ const LoginForm = memo(() => {
     }
   };
 
-  return (
+ return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <InputField icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
       <ErrorMessage message={errors.email?.message} />
@@ -80,7 +76,8 @@ const LoginForm = memo(() => {
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-4 text-sm">
+      {/* Responsive layout here */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 text-sm gap-2">
         <label className="flex items-center space-x-2">
           <input type="checkbox" className="w-4 h-4" />
           <span className="text-gray-600">Remember me?</span>

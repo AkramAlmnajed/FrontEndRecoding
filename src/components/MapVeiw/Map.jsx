@@ -15,12 +15,12 @@ export default function MapView({ onMapClick, onMarkerClick }) {
   const { allMarkers, searchResults, filterResults } = useMarkers();
   const center = { lng: 36.2965, lat: 33.5138 };
   const zoom = 11;
-  const [stylesClicked, setStylesClicked] = useState(false)
-  const [style, setStyle] = useState('STREETS')
+  const [stylesClicked, setStylesClicked] = useState(false);
+  const [style, setStyle] = useState('STREETS');
 
   // Initialize map
   useEffect(() => {
-    if (map.current) return;
+    if (map.current || !mapContainer.current) return;
 
     map.current = new maptilersdk.Map({
       container: mapContainer.current,
@@ -29,7 +29,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
       zoom: zoom,
     });
 
-    map.current.on("click", (e) => {
+     map.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
       if (onMapClick) onMapClick({ lng, lat });
 
@@ -41,7 +41,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
           .addTo(map.current);
       }
     });
-  }, []);
+  }, [onMapClick]);
 
   // Highlight and zoom logic
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
       })
         .setLngLat([parseFloat(m.longitude), parseFloat(m.latitude)])
         .setPopup(new maptilersdk.Popup().setText(m.name))
-        .addTo(map.current);
+         .addTo(map.current);
 
       newMarker.getElement().title = m.name;
 
@@ -99,19 +99,18 @@ export default function MapView({ onMapClick, onMarkerClick }) {
 
       markerObjects.current.push(newMarker);
     });
-  }, [allMarkers, searchResults, filterResults]);
+  }, [allMarkers, searchResults, filterResults, onMarkerClick]);
 
   //change map style feature
   useEffect(() => {
     if (map.current) {
-      map.current.setStyle(maptilersdk.MapStyle[style]);
+       map.current.setStyle(maptilersdk.MapStyle[style]);
     }
   }, [style]);
 
   const handleStylesClick = () => {
     setStylesClicked((prev) => !prev);
   };
-
   const handleStyleChange = (newStyle) => {
     setStyle(newStyle);
     setStylesClicked(false);
@@ -146,53 +145,53 @@ export default function MapView({ onMapClick, onMarkerClick }) {
     );
   };
 
-
-
   return (
     <div className="map-wrap" style={{ height: "100vh", width: "100%", position: "relative" }}>
       <div ref={mapContainer} className="map" style={{ height: "100%", width: "100%" }} />
+      
+      {/* Map Controls - Responsive positioning */}
       <MapButton
         onClick={handleFindMe}
         icon="mdi:crosshairs-gps"
         title="Find Me"
-        className="bottom-4 right-2 z-10" />
+        className="bottom-4 right-2 md:right-4 z-10" 
+      />
       <MapButton
         onClick={handleStylesClick}
         icon="mdi:palette"
         title="Map Styles"
-        className="bottom-16 right-2 z-10" />
+        className="bottom-16 right-2 md:right-4 z-10" 
+      />
 
+      {/* Style Menu - Responsive */}
       {stylesClicked && (
-        <div className="absolute bottom-20 right-16 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-2">
+        <div className="absolute bottom-20 right-14 md:right-16 w-36 md:w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-2">
           <button
-            className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="w-full text-left px-3 md:px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             onClick={() => handleStyleChange('STREETS')}
           >
             Streets
           </button>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            className="w-full text-left px-3 md:px-4 py-2 text-sm hover:bg-gray-100"
             onClick={() => handleStyleChange('OUTDOOR')}
           >
-            outdoor
+            Outdoor
           </button>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            className="w-full text-left px-3 md:px-4 py-2 text-sm hover:bg-gray-100"
             onClick={() => handleStyleChange('SATELLITE')}
           >
             Satellite
-
           </button>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            className="w-full text-left px-3 md:px-4 py-2 text-sm hover:bg-gray-100"
             onClick={() => handleStyleChange('BASIC')}
           >
             Basic
-
           </button>
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }
