@@ -17,7 +17,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
   const zoom = 11;
   const [stylesClicked, setStylesClicked] = useState(false);
   const [style, setStyle] = useState('STREETS');
-
+  const token = localStorage.getItem("accessToken")
   // Initialize map
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -29,7 +29,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
       zoom: zoom,
     });
 
-     map.current.on("click", (e) => {
+    map.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
       if (onMapClick) onMapClick({ lng, lat });
 
@@ -84,7 +84,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
       })
         .setLngLat([parseFloat(m.longitude), parseFloat(m.latitude)])
         .setPopup(new maptilersdk.Popup().setText(m.name))
-         .addTo(map.current);
+        .addTo(map.current);
 
       newMarker.getElement().title = m.name;
 
@@ -104,7 +104,7 @@ export default function MapView({ onMapClick, onMarkerClick }) {
   //change map style feature
   useEffect(() => {
     if (map.current) {
-       map.current.setStyle(maptilersdk.MapStyle[style]);
+      map.current.setStyle(maptilersdk.MapStyle[style]);
     }
   }, [style]);
 
@@ -116,51 +116,53 @@ export default function MapView({ onMapClick, onMarkerClick }) {
     setStylesClicked(false);
   };
 
-  //Find me feature
-  const handleFindMe = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        map.current?.flyTo({
-          center: [longitude, latitude],
-          zoom: 14,
-          speed: 1.4,
-        });
+  //download markers csv
+  const downloadCSV = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/locations/exportcsv", {
+        method: "GET",
+        headers: {
+          Accept: "text/csv",
+          Authorization: `Bearer ${token}`
 
-        const pulseEl = document.createElement('div');
-        pulseEl.className = 'pulse-marker';
+        },
+      });
 
-        new maptilersdk.Marker({ element: pulseEl })
-          .setLngLat([longitude, latitude])
-          .addTo(map.current);
-      },
-      () => {
-        alert("Unable to retrieve your location.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error response text:", errorText);
+
+        throw new Error("Failed to download CSV");
       }
-    );
+
+      const blob = await response.blob();
+      let filename = "Markers.csv";
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Could not download CSV file.");
+    }
   };
+
 
   return (
     <div className="map-wrap" style={{ height: "100vh", width: "100%", position: "relative" }}>
       <div ref={mapContainer} className="map" style={{ height: "100%", width: "100%" }} />
-      
+
       {/* Map Controls - Responsive positioning */}
-      <MapButton
-        onClick={handleFindMe}
-        icon="mdi:crosshairs-gps"
-        title="Find Me"
-        className="bottom-4 right-2 md:right-4 z-10" 
-      />
       <MapButton
         onClick={handleStylesClick}
         icon="mdi:palette"
         title="Map Styles"
-        className="bottom-16 right-2 md:right-4 z-10" 
+        className="bottom-4 right-2 md:right-2 z-10"
       />
 
       {/* Style Menu - Responsive */}
@@ -192,6 +194,13 @@ export default function MapView({ onMapClick, onMarkerClick }) {
           </button>
         </div>
       )}
+      <MapButton
+        onClick={downloadCSV}
+        icon="mdi:download"
+        title="download markers' info"
+        className="bottom-16 right-2 md:right-2 z-10"
+      />
+
     </div>
   );
 }

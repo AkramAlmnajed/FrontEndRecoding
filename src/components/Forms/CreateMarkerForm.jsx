@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useMarkers } from "../context/MarkersContext";
+import ErrorMessage from "../FormElements/error_message";
 import SelectAspectSaC from "./SelectAspect";
 
 const CreateMarkerForm = ({
@@ -16,6 +17,7 @@ const CreateMarkerForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const token = localStorage.getItem("accessToken");
   const { fetchMarkers } = useMarkers();
+  const [errorMessage, setErrorMessage] = useState()
 
   const createMarker = async () => {
     if (!locationName.trim()) {
@@ -31,7 +33,7 @@ const CreateMarkerForm = ({
     formData.append("category_id", aspectSelection.categoryId);
     formData.append("aspect_id", aspectSelection.aspectId);
     formData.append("sub_aspect_id", aspectSelection.subAspectId);
-    
+
     images.forEach((file) => {
       formData.append("images[]", file);
     });
@@ -41,6 +43,7 @@ const CreateMarkerForm = ({
 
     try {
       setIsSubmitting(true);
+      setErrorMessage(null);
       const response = await axios.post(
         "http://127.0.0.1:8000/api/locations",
         formData,
@@ -54,12 +57,14 @@ const CreateMarkerForm = ({
       await fetchMarkers();
       onCancel();
     } catch (error) {
-      console.error("Error creating marker:", error);
       if (error.response?.data?.errors) {
-        console.log("Validation Errors:", error.response.data.errors);
-        alert(JSON.stringify(error.response.data.errors, null, 2));
+        const errors = error.response.data.errors;
+        const firstErrorKey = Object.keys(errors)[0];
+        const firstErrorMsg = errors[firstErrorKey]?.[0];
+
+        setErrorMessage(firstErrorMsg || "Validation error occurred.");
       } else {
-        alert("Failed to create marker.");
+        setErrorMessage("Failed to create marker.");
       }
     } finally {
       setIsSubmitting(false);
@@ -73,9 +78,9 @@ const CreateMarkerForm = ({
         <span className="text-sm">Create Marker</span>
       </div>
 
-      <SelectAspectSaC 
+      <SelectAspectSaC
         initialValues={aspectSelection}
-        onSelectionChange={onAspectSelectionChange} 
+        onSelectionChange={onAspectSelectionChange}
       />
 
       <div className="relative flex items-center">
@@ -180,21 +185,23 @@ const CreateMarkerForm = ({
           </div>
         )}
       </div>
+      <div className="mt-4 mb-4">
+        <ErrorMessage message={errorMessage} />
+      </div>
 
       {/* Action Buttons */}
       <div className="flex space-x-2 mt-10">
         <button
-          className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${
-            isSubmitting
-              ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-cyan-600 text-white hover:bg-cyan-700"
-          }`}
+          className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${isSubmitting
+            ? "bg-gray-400 text-white cursor-not-allowed"
+            : "bg-cyan-600 text-white hover:bg-cyan-700"
+            }`}
           onClick={createMarker}
           disabled={isSubmitting}
         >
           {isSubmitting ? "Creating..." : "Create"}
         </button>
-        <button 
+        <button
           className="flex-1 py-2 border border-cyan-600 text-cyan-600 rounded-full text-sm font-medium hover:bg-cyan-50 transition-colors"
           onClick={onCancel}
           disabled={isSubmitting}

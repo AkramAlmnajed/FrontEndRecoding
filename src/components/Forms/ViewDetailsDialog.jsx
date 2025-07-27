@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
+import { useEffect, useState } from 'react';
 
 const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
   const [locationData, setLocationData] = useState(null);
@@ -8,10 +8,10 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
 
   const fetchLocationDetails = async () => {
     if (!locationId) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(`http://127.0.0.1:8000/api/locations/${locationId}`, {
@@ -188,9 +188,9 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
                     <div className="flex items-start space-x-4">
                       <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
                         {locationData.user.profile_image ? (
-                          <img 
-                            src={locationData.user.profile_image} 
-                            alt="Profile" 
+                          <img
+                            src={locationData.user.profile_image}
+                            alt="Profile"
                             className="w-12 h-12 rounded-full object-cover"
                           />
                         ) : (
@@ -216,9 +216,9 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
                               </span>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <Icon 
-                                icon={locationData.user.is_verified ? "mdi:check-circle" : "mdi:clock-outline"} 
-                                className={`text-lg ${locationData.user.is_verified ? 'text-green-500' : 'text-orange-500'}`} 
+                              <Icon
+                                icon={locationData.user.is_verified ? "mdi:check-circle" : "mdi:clock-outline"}
+                                className={`text-lg ${locationData.user.is_verified ? 'text-green-500' : 'text-orange-500'}`}
                               />
                               <span className={`text-sm font-medium ${locationData.user.is_verified ? 'text-green-700' : 'text-orange-700'}`}>
                                 {locationData.user.is_verified ? 'Verified User' : 'Pending Verification'}
@@ -246,7 +246,7 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
                     {locationData.images.map((image, index) => (
                       <div key={image.id} className="group relative overflow-hidden rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300">
                         <img
-                          src={`http://127.0.0.1:8000/storage/${image.image_path}`}
+                          src={`http://127.0.0.1:8000/${image.image_path}`}
                           alt={`Location image ${index + 1}`}
                           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
@@ -274,7 +274,14 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
                   <div className="space-y-3">
                     {locationData.references.map((reference, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        <p className="text-gray-700">{reference}</p>
+                        <p className="text-gray-700"><a
+                          href={`http://127.0.0.1:8000/${reference.pdf_path}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          View PDF
+                        </a></p>
                       </div>
                     ))}
                   </div>
