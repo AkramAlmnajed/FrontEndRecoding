@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
 import { useMarkers } from '../context/MarkersContext';
 import ErrorMessage from '../FormElements/error_message';
+import DeletePopup from '../PopUp/DeletePopup';
 import SelectAspectSaC from "./SelectAspect";
 
 const EditMarkerForm = ({
@@ -21,7 +22,7 @@ const EditMarkerForm = ({
     const { deleteMarker, fetchMarkers } = useMarkers();
     const [deleteErrors, setDeleteErrors] = useState();
     const token = localStorage.getItem("accessToken");
-    // const [openPopup, setOpenPopup] = useState(false)
+    const [openPopup, setOpenPopup] = useState(false)
 
     useEffect(() => {
         if (markerData) {
@@ -107,7 +108,7 @@ const EditMarkerForm = ({
 
     const handleViewDetailsClick = () => {
         if (markerData?.location?.id && onViewDetails) {
-            onViewDetails(markerData.location.id);
+            onViewDetails(markerData);
         }
     };
 
@@ -119,19 +120,31 @@ const EditMarkerForm = ({
                     <span className="text-sm">Edit Marker</span>
                 </div>
 
-                <button
-                    onClick={handleDelete}
-                    // onClick={() => { setOpenPopup(true) }}
-                    disabled={isSubmitting}
-                    className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
-                >
-                    <Icon
-                        icon="mdi:trash-can-outline"
-                        className="h-4 w-4 text-gray-500 hover:text-red-500"
-                    />
-                </button>
+                {/* View Details Button */}
+
+                <div className="flex items-center space-x-2">
+                    {/* View Details Eye Icon */}
+                    <button
+                        onClick={handleViewDetailsClick}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
+                        disabled={isSubmitting}
+                    >
+                        <Icon icon="mdi:eye" className="h-4 w-4 hover:text-teal-600" />
+                    </button>
+
+                    {/* Delete Marker */}
+                    <button
+                        onClick={() => setOpenPopup(true)}
+                        disabled={isSubmitting}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
+                    >
+                        <Icon icon="mdi:trash-can-outline" className="h-4 w-4 text-gray-500 hover:text-red-500" />
+                    </button>
+                </div>
+
+
             </div>
-            {/* {openPopup && (
+            {openPopup && (
                 <DeletePopup
                     onDelete={() => {
                         handleDelete();
@@ -139,18 +152,7 @@ const EditMarkerForm = ({
                     }}
                     onCancel={() => setOpenPopup(false)}
                 />
-            )} */}
-
-
-            {/* View Details Button */}
-            <button
-                onClick={handleViewDetailsClick}
-                className="w-full mb-4 py-2 bg-cyan-600 text-white rounded-full text-sm font-medium hover:bg-cyan-700 transition-colors disabled:opacity-50"
-                disabled={isSubmitting}
-            >
-                <Icon icon="mdi:eye" className="inline mr-1" />
-                View Details
-            </button>
+            )}
 
             <SelectAspectSaC
                 initialValues={{

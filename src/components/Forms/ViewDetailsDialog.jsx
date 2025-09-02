@@ -1,47 +1,27 @@
 import { Icon } from '@iconify/react';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import DeletePopup from '../PopUp/DeletePopup';
+import { useMarkers } from '../context/MarkersContext';
 
-const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
-  const [locationData, setLocationData] = useState(null);
+
+const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
+  const [openDeleteImage, setOpenDeleteImage] = useState(false)
+  const [openDeletePdf, setOpenDeletePdf] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const { fetchSpecificMarker } = useMarkers()
+  const [locationData, setLocationData] = useState(location);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchLocationDetails = async () => {
-    if (!locationId) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await fetch(`http://127.0.0.1:8000/api/locations/${locationId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch location details');
-      }
-
-      const result = await response.json();
-      setLocationData(result.location);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching location details:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (isOpen && locationId) {
-      fetchLocationDetails();
+    if (location && !locationData) {
+      setLocationData(location);
     }
-  }, [isOpen, locationId]);
+  }, [location]);
 
+  const token = localStorage.getItem("accessToken")
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
@@ -52,10 +32,92 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
     });
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !locationData) return null;
+  async function uploadFilesImages(files, type) {
+    try {
+      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/upload-files`
+      const formData = new FormData();
+
+      files.forEach((file) => {
+        if (type === "images") {
+          formData.append("images[]", file);
+        } else if (type === "references") {
+          formData.append("references[]", file);
+        }
+      });
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const updatedData = await fetchSpecificMarker(locationData.id)
+      if (updatedData) {
+        setLocationData(updatedData.location);
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        console.log("API error:", error.response.status, error.response.data)
+      }
+      else {
+        console.log("Request error:", error.message)
+      }
+    }
+  }
+
+  async function deleteImage(imageId) {
+    try {
+      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/delete-image/${imageId}`
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setLocationData(prev => ({
+        ...prev,
+        images: prev.images.filter(img => img.id !== imageId)
+      }));
+
+      setOpenDeleteImage(false);
+      setSelectedImage(null);
+
+    } catch (error) {
+      if (error.response) {
+        console.error("API error:", error.response.status, error.response.data);
+      } else {
+        console.error("Request error:", error.message);
+      }
+    }
+  }
+
+  async function deleteFile(referenceId) {
+    try {
+      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/delete-reference/${referenceId}`
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setLocationData(prev => ({
+        ...prev,
+        references: prev.references.filter(ref => ref.id !== referenceId)
+      }));
+      setSelectedFile(null);
+      setOpenDeletePdf(false);
+
+    }
+    catch (error) {
+      if (error.response) {
+        console.error("API error:", error.response.status, error.response.data);
+      } else {
+        console.error("Request error:", error.message);
+      }
+    }
+  }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 z-[9999] flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-black bg-opacity-60 z-[999] flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl animate-scale-in">
         {/* Header */}
         <div className="bg-gradient-to-r from-gray-800 to-gray-700 text-white p-6">
@@ -101,7 +163,6 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Error Loading Data</h3>
               <p className="text-red-600 mb-4">{error}</p>
               <button
-                onClick={fetchLocationDetails}
                 className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors inline-flex items-center space-x-2"
               >
                 <Icon icon="mdi:refresh" className="text-lg" />
@@ -233,60 +294,117 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
               )}
 
               {/* Images Gallery */}
-              {locationData.images && locationData.images.length > 0 && (
-                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <div className="flex items-center mb-4">
-                    <Icon icon="mdi:image-multiple" className="text-2xl text-gray-600 mr-3" />
-                    <h3 className="text-lg font-semibold text-gray-800">Image Gallery</h3>
-                    <span className="ml-2 bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
-                      {locationData.images.length} {locationData.images.length === 1 ? 'Image' : 'Images'}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {locationData.images.map((image, index) => (
-                      <div key={image.id} className="group relative overflow-hidden rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300">
-                        <img
-                          src={`http://127.0.0.1:8000/${image.image_path}`}
-                          alt={`Location image ${index + 1}`}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            e.target.src = '/placeholder-image.png';
-                          }}
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <Icon icon="mdi:image-multiple" className="text-2xl text-gray-600 mr-3" />
+                  <h3 className="text-lg font-semibold text-gray-800">Image Gallery</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 cursor-pointer">
+                  {(locationData.images || []).map((image, index) => (
+                    <div key={image.id} className="group relative overflow-hidden rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300">
+                      <img
+                        src={`http://127.0.0.1:8000/${image.image_path}`}
+                        alt={`Location image ${index + 1}`}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.src = '/placeholder-image.png';
+                        }}
+                      />
+                      {/* Bin Icon */}
+                      <button
+                        onClick={() => {
+                          setSelectedImage(image.id);
+                          setOpenDeleteImage(true);
+                        }}
+                        className="absolute top-2 right-2 p-2 rounded-full bg-white bg-opacity-80 hover:bg-red-100 transition-colors  z-50"
+                      >
+                        <Icon
+                          icon="mdi:delete"
+                          className="text-gray-600 group-hover:text-red-600 transition-colors"
                         />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <p className="text-sm font-medium">Image {index + 1}</p>
-                          <p className="text-xs text-gray-300">Added {formatDate(image.created_at)}</p>
-                        </div>
+                      </button>
+
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p className="text-sm font-medium">Image {index + 1}</p>
+                        <p className="text-xs text-gray-300">Added {formatDate(image.created_at)}</p>
                       </div>
-                    ))}
+                    </div>
+                  ))}
+
+                  <div
+                    className="relative flex items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-cyan-500 hover:bg-cyan-50 transition-colors duration-300"
+                  >
+                    <input type="file" multiple accept="image" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        uploadFilesImages(files, "images")
+                      }}
+                    />
+                    <Icon icon="mdi:plus" className="text-5xl text-gray-400 group-hover:text-cyan-600 transition-colors" />
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* References Section */}
-              {locationData.references && locationData.references.length > 0 && (
-                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <div className="flex items-center mb-4">
-                    <Icon icon="mdi:link-variant" className="text-2xl text-gray-600 mr-3" />
-                    <h3 className="text-lg font-semibold text-gray-800">References</h3>
-                  </div>
-                  <div className="space-y-3">
-                    {locationData.references.map((reference, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        <p className="text-gray-700"><a
-                          href={`http://127.0.0.1:8000/${reference.pdf_path}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          View PDF
-                        </a></p>
-                      </div>
-                    ))}
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <Icon icon="mdi:link-variant" className="text-2xl text-gray-600 mr-3" />
+                  <h3 className="text-lg font-semibold text-gray-800">Documents</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {(locationData.references || []).map((reference, index) => (
+                    <div
+                      key={index}
+                      className="group relative rounded-lg border border-gray-200 p-4 hover:shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300"
+                    >
+                      {/* Bin Icon */}
+                      <button
+                        onClick={() => {
+                          setSelectedFile(reference.id)
+                          setOpenDeletePdf(true)
+                        }}
+                        className="absolute top-2 right-2 p-2 rounded-full bg-white bg-opacity-80 hover:bg-red-100 transition-colors  z-50"
+                      >
+                        <Icon
+                          icon="mdi:delete"
+                          className="text-gray-600 group-hover:text-red-600 transition-colors"
+                        />
+                      </button>
+
+                      <a
+                        href={`http://127.0.0.1:8000/${reference.pdf_path}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon
+                          icon="mdi:file-outline"
+                          className="text-6xl text-teal-600 mb-3 group-hover:scale-105 transition-transform"
+                        />
+                      </a>
+
+                      {/* File name */}
+                      <p className="text-sm font-medium text-gray-800 truncate w-full px-2">
+                        {reference.file_name || `Reference ${index + 1}`}
+                      </p>
+                    </div>
+                  ))}
+
+                  <div
+                    className=" relative flex items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-cyan-500 hover:bg-cyan-50 transition-colors duration-300"
+                  >
+                    <input type="file" multiple accept=".txt,.pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        uploadFilesImages(files, "references")
+                      }}
+                    />
+                    <Icon icon="mdi:plus" className="text-5xl text-gray-400 group-hover:text-cyan-600 transition-colors" />
                   </div>
                 </div>
-              )}
+              </div>
+
 
               {/* Timestamps Card */}
               <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
@@ -315,7 +433,21 @@ const ViewDetailsDialog = ({ isOpen, onClose, locationId }) => {
           )}
         </div>
       </div>
+      {openDeleteImage && <DeletePopup
+        onDelete={() => {
+          deleteImage(selectedImage)
+        }}
+        onCancel={() => setOpenDeleteImage(false)}
+      ></DeletePopup>}
+
+      {openDeletePdf && (<DeletePopup
+        onDelete={() => {
+          deleteFile(selectedFile)
+        }}
+        onCancel={() => setOpenDeletePdf(false)}
+      ></DeletePopup>)}
     </div>
+
   );
 };
 

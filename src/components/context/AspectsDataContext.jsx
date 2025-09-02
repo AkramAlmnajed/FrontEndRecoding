@@ -46,7 +46,6 @@ export const AspectDataProvider = ({ children }) => {
                     Accept: "application/json",
                 }
             });
-            console.log("response", response.data)
             setSubAspects((prev) => ({ ...prev, [aspectId]: response.data }));
         } catch (err) {
             setError(`Failed to load sub-aspects for aspect ${aspectId}`);
@@ -64,7 +63,6 @@ export const AspectDataProvider = ({ children }) => {
                     Accept: "application/json",
                 }
             });
-            console.log("categories:", response.data)
 
             setCategories((prev) => ({ ...prev, [subAspectId]: response.data }));
         } catch (err) {
