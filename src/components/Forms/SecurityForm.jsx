@@ -6,7 +6,7 @@ import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
 import ErrorMessage from "../FormElements/error_message";
 
-const Security = memo(({ title }) => {
+const Security = memo(() => {
 
     const validationSchema = Yup.object().shape({
         currentPass: Yup.string().required('Password is Required'),
@@ -25,7 +25,7 @@ const Security = memo(({ title }) => {
     return (
         <div className="w-full max-w-[400px]">
             <h1 className="text-2xl md:text-[30px] font-light font-oswald mb-6 md:mb-7 tracking-tight leading-none">
-                {title}
+                Change Password:
             </h1>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>

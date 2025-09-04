@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { Icon } from "@iconify/react";
+import { useState } from "react";
+import ProfileInfo from "../components/auth/ProfileInfo";
+import { useUser } from "../components/context/UserProvider";
+import ChangeEmail from "../components/Forms/changeEmail";
 import EditProfile from '../components/Forms/EditProfile';
-import PositionForm from '../components/Forms/PositionForm';
 import Security from '../components/Forms/SecurityForm';
 import Header from "../components/Header/header";
 import SettingsSidebar from "../components/Sidebar/settingsSidebar";
-import ProfileInfo from "../components/auth/ProfileInfo";
-import { Icon } from "@iconify/react";
 
 const SettingsPage = () => {
     const [selectedSection, setSelectedSection] = useState('editProfile');
@@ -14,15 +15,18 @@ const SettingsPage = () => {
     const renderContent = () => {
         switch (selectedSection) {
             case 'editProfile':
-                return <EditProfile title="Account Info:" />;
-            case 'position':
-                return <PositionForm buttonText="Save Changes:" onSubmit={(data) => console.log('Position:', data)} title="Position:" />;
-            case 'security':
-                return <Security title="Change Password:" />;
+                return <EditProfile />;
+            case 'changeEmail':
+                return <ChangeEmail />;
+            case 'changePass':
+                return <Security />;
             default:
                 return null;
         }
     };
+
+    const userInfo = useUser()
+    console.log("user info", userInfo.user)
 
     const handleSectionSelect = (section) => {
         setSelectedSection(section);
@@ -30,9 +34,9 @@ const SettingsPage = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden"> 
+        <div className="flex flex-col h-screen overflow-hidden">
             <Header />
-            
+
             {/* Mobile Header with Menu Toggle */}
             <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200">
                 <h1 className="text-xl font-semibold">Settings</h1>
@@ -53,7 +57,7 @@ const SettingsPage = () => {
                 {/* Mobile Sidebar Overlay */}
                 {sidebarOpen && (
                     <div className="lg:hidden fixed inset-0 z-50">
-                        <div 
+                        <div
                             className="absolute inset-0 bg-black bg-opacity-50"
                             onClick={() => setSidebarOpen(false)}
                         />
@@ -72,32 +76,29 @@ const SettingsPage = () => {
                             <nav className="p-4 space-y-6">
                                 <button
                                     onClick={() => handleSectionSelect('editProfile')}
-                                    className={`flex items-center space-x-3 w-full text-left ${
-                                        selectedSection === 'editProfile' ? 'text-black font-semibold' : 'text-gray-400'
-                                    } hover:text-black`}
+                                    className={`flex items-center space-x-3 w-full text-left ${selectedSection === 'editProfile' ? 'text-black font-semibold' : 'text-gray-400'
+                                        } hover:text-black`}
                                 >
                                     <img src="/assets/Pen.png" className="w-5 h-5" alt="Edit" />
                                     <span>Edit Profile</span>
                                 </button>
 
                                 <button
-                                    onClick={() => handleSectionSelect('position')}
-                                    className={`flex items-center space-x-3 w-full text-left ${
-                                        selectedSection === 'position' ? 'text-black font-semibold' : 'text-gray-400'
-                                    } hover:text-black`}
+                                    onClick={() => handleSectionSelect('changeEmail')}
+                                    className={`flex items-center space-x-3 w-full text-left ${selectedSection === 'changeEmail' ? 'text-black font-semibold' : 'text-gray-400'
+                                        } hover:text-black`}
                                 >
-                                    <img src="/assets/name.png" className="w-5 h-5" alt="Position" />
-                                    <span>Position</span>
+                                    <img src="/assets/name.png" className="w-5 h-5" alt="changeEmail" />
+                                    <span>Email</span>
                                 </button>
 
                                 <button
-                                    onClick={() => handleSectionSelect('security')}
-                                    className={`flex items-center space-x-3 w-full text-left ${
-                                        selectedSection === 'security' ? 'text-black font-semibold' : 'text-gray-400'
-                                    } hover:text-black`}
+                                    onClick={() => handleSectionSelect('changePass')}
+                                    className={`flex items-center space-x-3 w-full text-left ${selectedSection === 'changePass' ? 'text-black font-semibold' : 'text-gray-400'
+                                        } hover:text-black`}
                                 >
-                                    <img src="/assets/Password.png" className="w-5 h-5" alt="Security" />
-                                    <span>Security</span>
+                                    <img src="/assets/Password.png" className="w-5 h-5" alt="Change Password" />
+                                    <span>Password</span>
                                 </button>
                             </nav>
                         </div>
@@ -115,9 +116,9 @@ const SettingsPage = () => {
                                 className="w-16 h-16 rounded-full object-cover"
                             />
                             <div>
-                                <h2 className="text-lg font-semibold">name here</h2>
-                                <p className="text-gray-500 text-sm">email here</p>
-                                <p className="text-xs text-gray-400">position</p>
+                                <h2 className="text-lg font-semibold">{userInfo.user.name}</h2>
+                                <p className="text-gray-500 text-sm">{userInfo.user.email}</p>
+                                <p className="text-xs text-gray-400">{userInfo.user.position}</p>
                             </div>
                         </div>
                     </div>

@@ -34,7 +34,7 @@ const Header = ({ toggleSidebar }) => {
   return (
     <header className="sticky top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-2 md:p-3 border-b border-gray-300 shadow">
       {/* Mobile Menu Button */}
-      <button 
+      <button
         onClick={toggleSidebar}
         className="md:hidden p-2 hover:bg-gray-200 rounded-lg"
       >
@@ -71,40 +71,26 @@ const Header = ({ toggleSidebar }) => {
           title="Settings"
         >
           <Icon icon="mdi:account" className="h-6 w-6 text-black" />
-          <img
+          {/* <img
             src="/assets/DropDown.png"
             alt="Dropdown"
             className="h-6 w-6 rounded-full"
-          />
+          /> */}
         </button>
-        
+
         {/* Divider - Hidden on mobile */}
         <div className="hidden sm:block border-l border-gray-300 h-6"></div>
 
-        {/* Language Section - Simplified on mobile */}
-        <div className="hidden md:flex items-center space-x-2 text-gray-600">
-          <img
-            src="/assets/Global.png"
-            alt="Language"
-            className="h-5 w-5 rounded-full"
-          />
-          <span className="hidden lg:inline">Language</span>
-          <img
-            src="/assets/DropDown.png"
-            alt="Dropdown"
-            className="h-6 w-6 rounded-full"
-          />
-        </div>
-        
-        {/* Divider */}
-        <div className="hidden md:block border-l border-gray-300 h-6"></div>
+
+        {/* Divider
+        <div className="hidden md:block border-l border-gray-300 h-6"></div> */}
 
         {/* Notification Bell */}
         <Icon
           icon="mdi:bell-outline"
           className="text-xl md:text-2xl cursor-pointer hover:text-gray-900 text-gray-600"
         />
-        
+
         {/* Settings Menu */}
         <div className="relative" ref={settingsRef}>
           <Icon

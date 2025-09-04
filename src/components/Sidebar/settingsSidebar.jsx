@@ -11,19 +11,19 @@ const SettingsSidebar = ({ onSelect, selected }) => {
                 </button>
 
                 <button
-                    onClick={() => onSelect('position')}
-                    className={`flex items-center space-x-3 ${selected === 'position' ? 'text-black font-semibold' : 'text-gray-400'} hover:text-black transition-colors`}
+                    onClick={() => onSelect('changeEmail')}
+                    className={`flex items-center space-x-3 ${selected === 'changeEmail' ? 'text-black font-semibold' : 'text-gray-400'} hover:text-black transition-colors`}
                 >
-                    <img src="/assets/name.png" className="w-5 h-5" alt="Position" />
-                    <span>Position</span>
+                    <img src="/assets/name.png" className="w-5 h-5" alt="change email" />
+                    <span>Email</span>
                 </button>
 
                 <button
-                    onClick={() => onSelect('security')}
-                    className={`flex items-center space-x-3 ${selected === 'security' ? 'text-black font-semibold' : 'text-gray-400'} hover:text-black transition-colors`}
+                    onClick={() => onSelect('changePass')}
+                    className={`flex items-center space-x-3 ${selected === 'changePass' ? 'text-black font-semibold' : 'text-gray-400'} hover:text-black transition-colors`}
                 >
-                    <img src="/assets/Password.png" className="w-5 h-5" alt="Security" />
-                    <span>Security</span>
+                    <img src="/assets/Password.png" className="w-5 h-5" alt="change password" />
+                    <span>Password</span>
                 </button>
             </nav>
         </aside>

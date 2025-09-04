@@ -1,16 +1,16 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ControlPanel from "./pages/ControlPanel";
 import Home from "./pages/Home";
 import LoginPage from './pages/LoginPage';
 import MapPage from "./pages/MapPage";
-import PositionPage from "./pages/PositionPage";
 import Profile from "./pages/Profile";
 import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SettingsPage from "./pages/SettingsPage";
 import VerificationPage from "./pages/VerificationPage";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
+
 
 function App() {
   return (
@@ -20,7 +20,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/resetPass" element={<ResetPasswordPage />} />
-        <Route path="/position" element={<PositionPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/verify" element={<VerificationPage />} />

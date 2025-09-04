@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-
+import { fetchWithRetry } from "../../services/retryHelper";
 
 const MarkerContext = createContext();
 
@@ -18,15 +18,19 @@ export const MarkerProvider = ({ children }) => {
     //fetch markers
     const fetchMarkers = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/locations", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            });
-            setAllMarkers(res.data);
-        } catch (err) {
-            console.error("Error loading default markers:", err);
+            const response = await fetchWithRetry(
+                () =>
+                    axios.get("http://127.0.0.1:8000/api/locations", {
+                        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+                    }),
+                5,
+                1000,
+                true   // require tokens
+            );
+
+            setAllMarkers(response.data);
+        } catch (error) {
+            console.error("Error loading default markers:", error);
         }
     };
 
@@ -41,7 +45,7 @@ export const MarkerProvider = ({ children }) => {
         if (!searchQuery) return;
         const fetchMarkers = async () => {
             try {
-                const response = await axios.get("//127.0.0.1:8000/api/locations/search", {
+                const response = await axios.get("http://127.0.0.1:8000/api/locations/search", {
                     params: {
                         name: searchQuery.name
                     },
