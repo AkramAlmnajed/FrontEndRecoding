@@ -2,15 +2,39 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import ProfileInfo from "../components/auth/ProfileInfo";
 import { useUser } from "../components/context/UserProvider";
+import ErrorMessage from "../components/FormElements/error_message";
 import ChangeEmail from "../components/Forms/changeEmail";
 import EditProfile from '../components/Forms/EditProfile';
-import Security from '../components/Forms/SecurityForm';
+import ResetPassword from "../components/Forms/ResetPasswordForm";
 import Header from "../components/Header/header";
 import SettingsSidebar from "../components/Sidebar/settingsSidebar";
 
 const SettingsPage = () => {
     const [selectedSection, setSelectedSection] = useState('editProfile');
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { user, updateProfile } = useUser()
+    const [serverError, setServerError] = useState()
+    const [isLoading, setIsLoading] = useState()
+
+    async function submit(data) {
+        try {
+            setIsLoading(true);
+            setServerError(null);
+            const result = await updateProfile({
+                current_password: data.current_password,
+                password: data.password,
+                password_confirmation: data.password_confirmation
+            });
+            if (result.ok) {
+                console.log("Profile updated successfully", result.data);
+                alert("Password Changed Successfully")
+            } else {
+                setServerError('Something went wrong. Please try again.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const renderContent = () => {
         switch (selectedSection) {
@@ -19,19 +43,25 @@ const SettingsPage = () => {
             case 'changeEmail':
                 return <ChangeEmail />;
             case 'changePass':
-                return <Security />;
+                return <>
+                    <ResetPassword
+                        title="Change Password:"
+                        buttonText={isLoading ? "Saving Changes.." : "Save Changes"}
+                        onSubmit={submit}
+                        showCurrentPassword={true}
+                    />
+                    {serverError && <ErrorMessage message={serverError} />}
+                </>
             default:
                 return null;
         }
     };
 
-    const userInfo = useUser()
-    console.log("user info", userInfo.user)
-
     const handleSectionSelect = (section) => {
         setSelectedSection(section);
         setSidebarOpen(false); // Close mobile sidebar after selection
     };
+
 
     return (
         <div className="flex flex-col h-screen overflow-hidden">
@@ -116,9 +146,9 @@ const SettingsPage = () => {
                                 className="w-16 h-16 rounded-full object-cover"
                             />
                             <div>
-                                <h2 className="text-lg font-semibold">{userInfo.user.name}</h2>
-                                <p className="text-gray-500 text-sm">{userInfo.user.email}</p>
-                                <p className="text-xs text-gray-400">{userInfo.user.position}</p>
+                                <h2 className="text-lg font-semibold">{user?.name}</h2>
+                                <p className="text-gray-500 text-sm">{user?.email}</p>
+                                <p className="text-xs text-gray-400">{user?.position}</p>
                             </div>
                         </div>
                     </div>

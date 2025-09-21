@@ -3,12 +3,13 @@ import { memo, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
+import { useVerification } from "../context/VerificationContext";
 import ErrorMessage from "../FormElements/error_message";
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
 
 const RegisterForm = memo(() => {
-
+  const { resendCode } = useVerification()
   const [apiError, setApiError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const validationSchema = Yup.object().shape({
@@ -46,6 +47,7 @@ const RegisterForm = memo(() => {
         password: data.password,
         password_confirmation: data.confirmPassword,
       };
+      localStorage.setItem("RegisterEmail", data.email);
 
       const response = await fetch("http://127.0.0.1:8000/api/register", {
         method: "POST",
@@ -86,7 +88,8 @@ const RegisterForm = memo(() => {
         }
       } else {
         console.log("Registration successful:", result);
-        navigate("/map");
+        await resendCode(data.email)
+        navigate("/verifyRegister");
       }
     } catch (error) {
       console.error("Error during registration:", error);
@@ -98,6 +101,8 @@ const RegisterForm = memo(() => {
     } finally {
       setIsLoading(false);
     }
+
+
   };
 
 

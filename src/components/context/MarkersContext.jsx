@@ -31,6 +31,7 @@ export const MarkerProvider = ({ children }) => {
             setAllMarkers(response.data);
         } catch (error) {
             console.error("Error loading default markers:", error);
+            console.log("Token:", token);
         }
     };
 

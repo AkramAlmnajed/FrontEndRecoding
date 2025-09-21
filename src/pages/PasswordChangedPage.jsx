@@ -1,11 +1,24 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/auth/AuthLayout';
-import PasswordChanged from '../components/Forms/PasswordChanged';
+import SuccessMessage from '../components/Forms/SuccessMessage';
 
 const PasswordChangedPage = () => {
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/login");
+    }, 5000);
+  })
+
   return (
     <AuthLayout title="">
-      <PasswordChanged />
+      <SuccessMessage
+        title="Password Changed!"
+        description="Your password has been changed successfully!"
+      />
     </AuthLayout>
   );
 };

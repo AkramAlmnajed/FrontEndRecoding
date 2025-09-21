@@ -4,8 +4,10 @@ import App from './App';
 import { AspectDataProvider } from './components/context/AspectsDataContext';
 import { MarkerProvider } from './components/context/MarkersContext';
 import { UserProvider } from "./components/context/UserProvider";
+import { VerificationProvider } from './components/context/VerificationContext';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,7 +16,9 @@ root.render(
     <UserProvider>
       <MarkerProvider>
         <AspectDataProvider>
-          <App />
+          <VerificationProvider>
+            <App />
+          </VerificationProvider>
         </AspectDataProvider>
       </MarkerProvider>
     </UserProvider>

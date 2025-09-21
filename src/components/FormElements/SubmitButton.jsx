@@ -1,17 +1,15 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 const SubmitButton = memo(({ text, onClick }) => (
   <button
-    className="w-full py-3 text-xl font-light tracking-wide text-black mb-6 transition duration-300  "
-    style={{
-      border: "1px solid #00ACC1",
-      background: "transparent",
-      borderRadius: "100px",
-    }}
+    type="submit"
     aria-label={text}
-    type='submit'
     onClick={onClick}
-
+    className="
+    w-full py-3 text-xl font-light tracking-wide mb-6
+  rounded-full border border-[#2a93c8] bg-[#2a93c8]
+  text-white transition duration-300 hover:bg-white hover:text-[#2a93c8] focus:outline-none focus:ring-2 focus:ring-[#2a93c8]
+    "
   >
     {text}
   </button>

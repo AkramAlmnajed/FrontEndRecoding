@@ -7,6 +7,7 @@ const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const settingsRef = useRef(null);
+  const { user } = useUser();
 
   const handleSettingsClick = () => {
     setShowSettingsMenu((prev) => !prev);
@@ -29,7 +30,6 @@ const Header = ({ toggleSidebar }) => {
     };
   }, []);
 
-  const { name } = useUser();
 
   return (
     <header className="sticky top-0 left-0 right-0 z-50 flex justify-between items-center bg-gray-100 p-2 md:p-3 border-b border-gray-300 shadow">
@@ -64,26 +64,11 @@ const Header = ({ toggleSidebar }) => {
 
       {/* User Section */}
       <div className="flex items-center space-x-2 md:space-x-4">
-        {/* User Info - Hidden on small screens */}
-        <button
-          onClick={() => navigate("/settings")}
-          className="hidden sm:flex items-center space-x-2 focus:outline-none hover:bg-gray-200 px-2 py-1 rounded transition"
-          title="Settings"
-        >
-          <Icon icon="mdi:account" className="h-6 w-6 text-black" />
-          {/* <img
-            src="/assets/DropDown.png"
-            alt="Dropdown"
-            className="h-6 w-6 rounded-full"
-          /> */}
-        </button>
 
         {/* Divider - Hidden on mobile */}
         <div className="hidden sm:block border-l border-gray-300 h-6"></div>
 
 
-        {/* Divider
-        <div className="hidden md:block border-l border-gray-300 h-6"></div> */}
 
         {/* Notification Bell */}
         <Icon
@@ -93,30 +78,61 @@ const Header = ({ toggleSidebar }) => {
 
         {/* Settings Menu */}
         <div className="relative" ref={settingsRef}>
-          <Icon
-            icon="mdi:cog-outline"
-            className="text-xl md:text-2xl cursor-pointer hover:text-gray-900 text-gray-600"
+          <img
+            src={
+              user?.profile_image
+                ? (user.profile_image.startsWith("http")
+                  ? user.profile_image
+                  : `http://127.0.0.1:8000/storage/${user.profile_image}`)
+                : "/assets/profile.png"
+            }
+            alt="User profile"
+            className="w-7 h-7 md:w-10 md:h-10 rounded-full object-cover cursor-pointer border border-gray-300"
             onClick={handleSettingsClick}
           />
           {showSettingsMenu && (
-            <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-2">
-              <button
-                className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm"
-                onClick={() => {
-                  setShowSettingsMenu(false);
-                  navigate("/control-panel");
-                }}
-              >
-                Go to Control Panel
-              </button>
-              <button
-                className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 text-sm"
-                onClick={handleLogout}
-              >
-                Log out
-              </button>
-            </div>
-          )}
+  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
+    
+    {/* Profile Section */}
+    <div className="px-4 py-3 border-b border-gray-100">
+      <p className="text-sm font-medium text-gray-900">{user?.name || "Guest User"}</p>
+      <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+    </div>
+
+    {/* Menu Options */}
+    <div className="flex flex-col py-2">
+      <button
+        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 text-sm transition-colors"
+        onClick={() => {
+          setShowSettingsMenu(false);
+          navigate("/profile");
+        }}
+      >
+        Profile
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 text-sm transition-colors"
+        onClick={() => {
+          setShowSettingsMenu(false);
+          navigate("/control-panel");
+        }}
+      >
+        Control Panel
+      </button>
+    </div>
+
+    <div className="border-t border-gray-100">
+      <button
+        className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-medium transition-colors"
+        onClick={handleLogout}
+      >
+        Log out
+      </button>
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </header>

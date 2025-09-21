@@ -1,15 +1,19 @@
-import React, { memo } from "react";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { memo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { useMarkers } from "../context/MarkersContext";
+import { useUser } from "../context/UserProvider";
+import ErrorMessage from "../FormElements/error_message";
 import InputField from "../FormElements/InputField";
 import SubmitButton from "../FormElements/SubmitButton";
-import ErrorMessage from "../FormElements/error_message";
 
 const LoginForm = memo(() => {
   const navigate = useNavigate();
-
+  const { fetchUser } = useUser();
+  const { fetchMarkers } = useMarkers();
+  const [isLoading, setIsLoading] = useState()
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email format")
@@ -30,6 +34,7 @@ const LoginForm = memo(() => {
   });
 
   const onSubmit = async (data) => {
+    setIsLoading(true)
     try {
       const response = await fetch("http://127.0.0.1:8000/api/login", {
         method: "POST",
@@ -42,11 +47,14 @@ const LoginForm = memo(() => {
       if (!response.ok) {
         const serverMsg = result.message || "Login failed";
         setError("root.serverError", { type: "server", message: serverMsg });
+
         return;
       }
 
       if (result.access_token) {
         localStorage.setItem("accessToken", result.access_token);
+        await fetchMarkers()
+        await fetchUser()
         navigate("/map");
       } else {
         setError("root.serverError", {
@@ -59,10 +67,12 @@ const LoginForm = memo(() => {
         type: "server",
         message: error.message || "Network error"
       });
+    } finally {
+      setIsLoading(false)
     }
   };
 
- return (
+  return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <InputField icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
       <ErrorMessage message={errors.email?.message} />
@@ -82,12 +92,12 @@ const LoginForm = memo(() => {
           <input type="checkbox" className="w-4 h-4" />
           <span className="text-gray-600">Remember me?</span>
         </label>
-        <Link to="/resetPass" className="text-gray-600 hover:text-blue-800">
+        <Link to="/reset" className="text-gray-600 hover:text-blue-800">
           Forgot Password?
         </Link>
       </div>
 
-      <SubmitButton text="Login" type="submit" disabled={isSubmitting} />
+      <SubmitButton text={isLoading ? "logging in..." : "login"} type="submit" disabled={isSubmitting} />
 
       <p className="text-center text-sm text-gray-600">
         Don't have an account?{" "}

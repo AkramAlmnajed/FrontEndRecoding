@@ -1,25 +1,46 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import { useUser } from "../context/UserProvider";
+import ErrorMessage from "../FormElements/error_message";
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
-import ErrorMessage from "../FormElements/error_message";
-
 
 
 const EditProfile = memo(() => {
+
+    const { updateProfile, user } = useUser()
+    const [isLoading, setIsLoading] = useState(false)
+    const [serverError, setServerError] = useState()
+
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Enter your name"),
-        password: Yup.string().required("Password is required"),
     });
     const { register, handleSubmit, formState: { errors }, } = useForm({
         resolver: yupResolver(validationSchema),
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: {
+            name: user?.name || ""
+        }
     });
-    const onSubmit = (data) => {
-        console.log("Form data:", data);
+
+    const onSubmit = async (data) => {
+        try {
+            setIsLoading(true);
+            setServerError(null);
+            const result = await updateProfile({ name: data.name }, user?.id);
+
+            if (result.ok) {
+                alert("Password Changed Successfully")
+            } else {
+                setServerError(result.error || 'Something went wrong. Please try again.');
+            }
+        } finally {
+            setIsLoading(false)
+        }
     };
+
 
     return (
         <div className="w-full max-w-[400px] ">
@@ -29,11 +50,9 @@ const EditProfile = memo(() => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <InputField icon="/assets/Name.png" placeholder="Full Name" {...register("name")} />
                 <ErrorMessage message={errors.name?.message} />
-                <InputField type="password" icon="/assets/Password.png" placeholder="Password"  {...register("password")} />
-                <ErrorMessage message={errors.password?.message} />
 
 
-                <SubmitButton text="Save Changes" />
+                <SubmitButton text={isLoading ? "Saving Changes.." : "Save Changes"} />
 
             </form>
         </div>
