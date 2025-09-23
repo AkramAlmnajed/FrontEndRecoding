@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { useMarkers } from "../context/MarkersContext";
 import MapButton from '../FormElements/MapButton';
+import api from "../api/axios";
 
 
 maptilersdk.config.apiKey = "eNjUSBU04MmXxL1ACa33";
@@ -205,39 +206,29 @@ export default function MapView({ onMapClick, onMarkerClick }) {
 
   //download markers csv
   const downloadCSV = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/locations/exportcsv", {
-        method: "GET",
-        headers: {
-          Accept: "text/csv",
-          Authorization: `Bearer ${token}`
+  try {
+    const response = await api.get("locations/exportcsv", {
+      headers: {
+        Accept: "text/csv",
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob", 
+    });
 
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Server error response text:", errorText);
-
-        throw new Error("Failed to download CSV");
-      }
-
-      const blob = await response.blob();
-      let filename = "Markers.csv";
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download error:", error);
-      alert("Could not download CSV file.");
-    }
-  };
-
+    const blob = new Blob([response.data], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Markers.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Could not download CSV file.");
+  }
+};
 
   return (
     <div className="map-wrap" style={{ height: "100vh", width: "100%", position: "relative" }}>

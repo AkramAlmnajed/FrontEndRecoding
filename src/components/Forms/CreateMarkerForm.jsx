@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useMarkers } from "../context/MarkersContext";
 import ErrorMessage from "../FormElements/error_message";
 import SelectAspectSaC from "./SelectAspect";
+import api from "../api/axios";
 
 const CreateMarkerForm = ({
   aspectSelection,
@@ -44,8 +45,8 @@ const CreateMarkerForm = ({
     try {
       setIsSubmitting(true);
       setErrorMessage(null);
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/locations",
+      const response = await api.post(
+        "locations",
         formData,
         {
           headers: {

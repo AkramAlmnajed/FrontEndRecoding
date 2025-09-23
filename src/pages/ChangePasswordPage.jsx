@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../components/api/axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../components/FormElements/error_message';
@@ -11,11 +11,10 @@ const ChangePasswordPage = () => {
     const [isLoading, setIsLoading] = useState()
 
     async function changePass(data) {
-        const url = 'http://127.0.0.1:8000/api/change-password'
         const token = localStorage.getItem("accessToken")
         try {
             setIsLoading(true);
-            await axios.post(url, { password: data.password, password_confirmation: data.password_confirmation }, {
+            await api.post("change-password", { password: data.password, password_confirmation: data.password_confirmation }, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"

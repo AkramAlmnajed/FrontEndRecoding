@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import api from "../api/axios";
 import { useMarkers } from "../context/MarkersContext";
 import { useUser } from "../context/UserProvider";
 import ErrorMessage from "../FormElements/error_message";
@@ -34,41 +35,43 @@ const LoginForm = memo(() => {
   });
 
   const onSubmit = async (data) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await api.post(
+        "login",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        const serverMsg = result.message || "Login failed";
-        setError("root.serverError", { type: "server", message: serverMsg });
-
-        return;
-      }
+      const result = response.data;
 
       if (result.access_token) {
         localStorage.setItem("accessToken", result.access_token);
-        await fetchMarkers()
-        await fetchUser()
+        await fetchMarkers();
+        await fetchUser();
         navigate("/map");
       } else {
         setError("root.serverError", {
           type: "server",
-          message: "Login successful but no token returned!"
+          message: "Login successful but no token returned!",
         });
       }
     } catch (error) {
+      const serverMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Login failed";
       setError("root.serverError", {
         type: "server",
-        message: error.message || "Network error"
+        message: serverMsg,
       });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 

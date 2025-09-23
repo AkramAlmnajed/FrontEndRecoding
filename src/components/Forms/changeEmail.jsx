@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import ErrorMessage from '../FormElements/error_message';
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
+import api from "../api/axios"
 
 const ChangeEmail = memo(() => {
 
@@ -32,8 +33,7 @@ const ChangeEmail = memo(() => {
     async function changeEm(data) {
         setIsLoading(true);
         try {
-            const url = 'http://127.0.0.1:8000/api/change-email'
-            const response = await axios.post(url, {
+            const response = await api.post( 'change-email', {
                 new_email: data.email,
                 current_password: data.currentPass
             }, {

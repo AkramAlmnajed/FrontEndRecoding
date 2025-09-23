@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
+import api from "../components/api/axios";
 import Header from "../components/Header/header";
 import ModalAddUser from "../components/PopUp/AddUser";
 import PopoverEditUser from "../components/PopUp/PopoverEditUser";
@@ -47,8 +47,8 @@ export default function ControlPanel() {
         setLoading(false);
         return;
       }
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/users?page=${page}&per_page=${pageSize}`,
+      const response = await api.get(
+        `users?page=${page}&per_page=${pageSize}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ export default function ControlPanel() {
     setDeleteLoadingId(id);
     const token = localStorage.getItem("accessToken");
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/users/${id}`, {
+      await api.delete(`users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setToast("User deleted successfully!");
@@ -116,11 +116,10 @@ export default function ControlPanel() {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 mx-1 rounded-full ${
-            i === currentPage
+          className={`px-3 py-1 mx-1 rounded-full ${i === currentPage
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-700 hover:bg-blue-100"
-          }`}
+            }`}
         >
           {i}
         </button>
@@ -198,8 +197,8 @@ export default function ControlPanel() {
                               (user.status === "Active"
                                 ? "bg-green-100 text-green-800"
                                 : user.status === "Pause"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800")
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800")
                             }
                           >
                             {user.status}
@@ -215,11 +214,10 @@ export default function ControlPanel() {
                           />
                           <Icon
                             icon="mdi:delete-outline"
-                            className={`text-red-500 cursor-pointer hover:text-red-700 ${
-                              deleteLoadingId === user.id
+                            className={`text-red-500 cursor-pointer hover:text-red-700 ${deleteLoadingId === user.id
                                 ? "opacity-50 pointer-events-none"
                                 : ""
-                            }`}
+                              }`}
                             width="20"
                             title="Delete"
                             onClick={() => setConfirmDeleteId(user.id)}
@@ -300,7 +298,7 @@ export default function ControlPanel() {
                       </div>
                       <input type="checkbox" className="mt-1" />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
                       <div>
                         <span className="text-gray-500">Position:</span>
@@ -322,8 +320,8 @@ export default function ControlPanel() {
                             (user.status === "Active"
                               ? "bg-green-100 text-green-800"
                               : user.status === "Pause"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800")
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800")
                           }
                         >
                           {user.status}
@@ -340,11 +338,10 @@ export default function ControlPanel() {
                         <span>Edit</span>
                       </button>
                       <button
-                        className={`flex items-center space-x-2 text-red-600 hover:text-red-800 font-medium ${
-                          deleteLoadingId === user.id
+                        className={`flex items-center space-x-2 text-red-600 hover:text-red-800 font-medium ${deleteLoadingId === user.id
                             ? "opacity-50 pointer-events-none"
                             : ""
-                        }`}
+                          }`}
                         onClick={() => setConfirmDeleteId(user.id)}
                       >
                         <Icon icon="mdi:delete-outline" width="18" />

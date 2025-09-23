@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import InputField from "../FormElements/InputField";
 import SubmitButton from "../FormElements/SubmitButton";
 import ErrorMessage from "../FormElements/error_message";
-import { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 const allowedPositions = [
   "Co-Head",
@@ -88,8 +88,8 @@ const ModalAddUser = ({ show, onClose }) => {
       return;
     }
     try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/users",
+      await api.post(
+        "users",
         {
           name: data.name,
           email: data.email,
@@ -174,8 +174,8 @@ const ModalAddUser = ({ show, onClose }) => {
           </div>
 
           <div>
-            <select 
-              {...register("position")} 
+            <select
+              {...register("position")}
               className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option>Select position</option>
@@ -189,8 +189,8 @@ const ModalAddUser = ({ show, onClose }) => {
           </div>
 
           <div>
-            <select 
-              {...register("department")} 
+            <select
+              {...register("department")}
               className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option>Select department</option>
@@ -204,8 +204,8 @@ const ModalAddUser = ({ show, onClose }) => {
           </div>
 
           <div>
-            <select 
-              {...register("layer")} 
+            <select
+              {...register("layer")}
               className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option>Select layer</option>

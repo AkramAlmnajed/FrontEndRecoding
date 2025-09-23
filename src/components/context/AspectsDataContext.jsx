@@ -1,12 +1,10 @@
-import axios from "axios";
 import { createContext, useCallback, useContext, useState } from "react";
+import api from "../api/axios";
 
-// Create the context
 const AspectDataContext = createContext();
 
 export const useAspectData = () => useContext(AspectDataContext);
 
-// Provider component
 export const AspectDataProvider = ({ children }) => {
     const token = localStorage.getItem("accessToken");
     const [aspects, setAspects] = useState([]);
@@ -20,7 +18,7 @@ export const AspectDataProvider = ({ children }) => {
     const fetchAspects = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await axios.get("http://127.0.0.1:8000/api/aspects", {
+            const response = await api.get("aspects", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -40,7 +38,7 @@ export const AspectDataProvider = ({ children }) => {
         if (subAspects[aspectId]) return;
 
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/sub-aspects/${aspectId}`, {
+            const response = await api.get(`sub-aspects/${aspectId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -57,7 +55,7 @@ export const AspectDataProvider = ({ children }) => {
         if (categories[subAspectId]) return;
 
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/categories/${subAspectId}`, {
+            const response = await api.get(`categories/${subAspectId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 const InputField = memo(({ type, icon, placeholder, ...props }, ref) => (
   <div className="mb-7">

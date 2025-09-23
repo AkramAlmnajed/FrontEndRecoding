@@ -11,13 +11,12 @@ import MapPage from "./pages/MapPage";
 import PasswordChanged2 from "./pages/PasswordChanged2";
 import PasswordChangedPage from "./pages/PasswordChangedPage";
 import PasswordResetPage from "./pages/PasswordResetPage";
-import Profile from "./pages/Profile";
 import RegisterPage from "./pages/RegisterPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SettingsPage from "./pages/SettingsPage";
 import VerificationPage from "./pages/VerificationPage";
-import VerifyRegisterPage from "./pages/VerifyRegisterPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
+import VerifyRegisterPage from "./pages/VerifyRegisterPage";
 
 function App() {
   return (
@@ -44,15 +43,6 @@ function App() {
 
 
 
-        {/* المسارات المحمية */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/control-panel"
           element={

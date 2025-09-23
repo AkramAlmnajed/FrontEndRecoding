@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
+import api from '../api/axios';
 import { useMarkers } from '../context/MarkersContext';
 import ErrorMessage from '../FormElements/error_message';
 import DeletePopup from '../PopUp/DeletePopup';
@@ -60,6 +61,7 @@ const EditMarkerForm = ({
         try {
             setIsSubmitting(true);
             setErrorMessage(null);
+
             const payload = {
                 name: locationName,
                 description: description,
@@ -71,33 +73,23 @@ const EditMarkerForm = ({
             };
 
             console.log("Payload being sent:", payload);
-            const url = `http://127.0.0.1:8000/api/locations/${markerData.location.id}`;
 
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+            const response = await api.put(
+                `locations/${markerData.location.id}`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                }
+            );
 
-            const result = await response.json();
-            console.log("PUT response:", result);
+            console.log("PUT response:", response.data);
 
-            if (response.ok) {
-                await fetchMarkers();
-                onCancel();
-                alert("Marker updated successfully!");
-            } else {
-                const backendMsg =
-                    result?.errors?.[Object.keys(result.errors)[0]]?.[0] ||
-                    result?.message ||
-                    "Failed to update marker.";
-
-                setErrorMessage(backendMsg);
-            }
+            await fetchMarkers();
+            onCancel();
+            alert("Marker updated successfully!");
         } catch (error) {
             console.error("Error updating marker:", error);
             setErrorMessage(error.message || "Unexpected error occurred.");

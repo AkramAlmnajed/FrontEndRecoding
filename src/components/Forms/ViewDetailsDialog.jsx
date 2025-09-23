@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useEffect, useState } from 'react';
 import DeletePopup from '../PopUp/DeletePopup';
 import { useMarkers } from '../context/MarkersContext';
@@ -35,7 +35,6 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
   if (!isOpen || !locationData) return null;
   async function uploadFilesImages(files, type) {
     try {
-      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/upload-files`
       const formData = new FormData();
 
       files.forEach((file) => {
@@ -46,7 +45,7 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
         }
       });
 
-      const response = await axios.post(url, formData, {
+      const response = await api.post(`locations/${locationData.id}/upload-files`, formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -68,8 +67,7 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
 
   async function deleteImage(imageId) {
     try {
-      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/delete-image/${imageId}`
-      const response = await axios.delete(url, {
+      const response = await api.delete(`locations/${locationData.id}/delete-image/${imageId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -93,8 +91,7 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
 
   async function deleteFile(referenceId) {
     try {
-      const url = `http://127.0.0.1:8000/api/locations/${locationData.id}/delete-reference/${referenceId}`
-      const response = await axios.delete(url, {
+      const response = await api.delete(`locations/${locationData.id}/delete-reference/${referenceId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

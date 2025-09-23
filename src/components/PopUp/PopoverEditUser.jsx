@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { Icon } from "@iconify/react";
 
 const allowedPositions = [
@@ -28,8 +28,8 @@ export default function PopoverEditUser({ user, onClose, onSaved }) {
     setError("");
     const token = localStorage.getItem("accessToken");
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/users/${user.id}`,
+      await api.put(
+        `users/${user.id}`,
         { name, email }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -50,8 +50,8 @@ export default function PopoverEditUser({ user, onClose, onSaved }) {
     setError("");
     const token = localStorage.getItem("accessToken");
     try {
-      await axios.post(
-        `http://127.0.0.1:8000/api/updatePregisterUserPosition/${user.id}`,
+      await api.post(
+        `updatePregisterUserPosition/${user.id}`,
         { NewPosition: position }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,6 +1,6 @@
-import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchWithRetry } from "../../services/retryHelper";
+import api from "../api/axios";
 
 const MarkerContext = createContext();
 
@@ -20,7 +20,7 @@ export const MarkerProvider = ({ children }) => {
         try {
             const response = await fetchWithRetry(
                 () =>
-                    axios.get("http://127.0.0.1:8000/api/locations", {
+                    api.get("locations", {
                         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
                     }),
                 5,
@@ -46,7 +46,7 @@ export const MarkerProvider = ({ children }) => {
         if (!searchQuery) return;
         const fetchMarkers = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/locations/search", {
+                const response = await api.get("locations/search", {
                     params: {
                         name: searchQuery.name
                     },
@@ -70,8 +70,8 @@ export const MarkerProvider = ({ children }) => {
 
         const fetchFilteredMarkers = async () => {
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/locations/filter",
+                const response = await api.get(
+                    "locations/filter",
                     {
                         params: filterQuery,
                         headers: {
@@ -95,7 +95,7 @@ export const MarkerProvider = ({ children }) => {
     //get a specific marker
     const fetchSpecificMarker = async (id) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/locations/${id}`, {
+            const response = await api.get(`locations/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -113,7 +113,7 @@ export const MarkerProvider = ({ children }) => {
     //delete marker
     const deleteMarker = async (id) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/locations/${id}`, {
+            await api.delete(`locations/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -1,6 +1,6 @@
-import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchWithRetry } from "../../services/retryHelper";
+import api from "../api/axios";
 
 const UserContext = createContext();
 
@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await fetchWithRetry(
         () =>
-          axios.get("http://127.0.0.1:8000/api/user/profile", {
+          api.get("user/profile", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -49,7 +49,6 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   async function updateProfile(data) {
-    const url = `http://127.0.0.1:8000/api/profile/edit`;
     const token = localStorage.getItem("accessToken");
     let payload;
 
@@ -66,7 +65,7 @@ export const UserProvider = ({ children }) => {
     }
 
     try {
-      const response = await axios.post(url, payload, {
+      const response = await api.post("profile/edit", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

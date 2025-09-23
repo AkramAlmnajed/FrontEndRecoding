@@ -3,6 +3,7 @@ import { memo, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
+import api from "../api/axios";
 import { useVerification } from "../context/VerificationContext";
 import ErrorMessage from "../FormElements/error_message";
 import InputField from '../FormElements/InputField';
@@ -35,7 +36,6 @@ const RegisterForm = memo(() => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-
     try {
       setIsLoading(true);
       setApiError("");
@@ -49,51 +49,52 @@ const RegisterForm = memo(() => {
       };
       localStorage.setItem("RegisterEmail", data.email);
 
-      const response = await fetch("http://127.0.0.1:8000/api/register", {
-        method: "POST",
+      const response = await api.post("register", payload, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(payload),
-        credentials: "omit"
       });
 
-      const result = await response.json();
+      const result = response.data;
+      console.log("Registration successful:", result);
 
-      if (!response.ok) {
-        console.error("Registration failed:", result);
+      await resendCode(data.email);
+      navigate("/verifyRegister");
+    } catch (error) {
+      console.error("Error during registration:", error);
 
-        if (response.status === 422 && result.errors) {
-          for (const key in result.errors) {
-            if (Object.hasOwnProperty.call(result.errors, key)) {
-              const formFieldName = key === 'name' ? 'fullName' : key === 'password_confirmation' ? 'confirmPassword' : key;
+      if (error.response) {
+        const { status, data: errData } = error.response;
+
+        if (status === 422 && errData.errors) {
+          for (const key in errData.errors) {
+            if (Object.hasOwnProperty.call(errData.errors, key)) {
+              const formFieldName =
+                key === "name"
+                  ? "fullName"
+                  : key === "password_confirmation"
+                    ? "confirmPassword"
+                    : key;
 
               setError(formFieldName, {
                 type: "server",
-                message: result.errors[key][0],
+                message: errData.errors[key][0],
               });
             }
           }
           setApiError("Please correct the errors above.");
         } else {
           if (
-            result.message?.includes("Volunteer data not found") ||
-            result.message?.includes("Registration is not allowed")
+            errData.message?.includes("Volunteer data not found") ||
+            errData.message?.includes("Registration is not allowed")
           ) {
-            setApiError(result.message);
+            setApiError(errData.message);
           } else {
-            setApiError(result.message || "Registration failed. Please try again.");
+            setApiError(errData.message || "Registration failed. Please try again.");
           }
         }
-      } else {
-        console.log("Registration successful:", result);
-        await resendCode(data.email)
-        navigate("/verifyRegister");
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      if (error instanceof TypeError && error.message === "Failed to fetch") {
+      } else if (error.request) {
         setApiError("Cannot connect to the server. Please check your internet connection.");
       } else {
         setApiError("An unexpected error occurred. Please try again later.");
@@ -101,9 +102,8 @@ const RegisterForm = memo(() => {
     } finally {
       setIsLoading(false);
     }
-
-
   };
+
 
 
 
