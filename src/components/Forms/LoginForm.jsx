@@ -80,7 +80,7 @@ const LoginForm = memo(() => {
       <InputField icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
       <ErrorMessage message={errors.email?.message} />
 
-      <InputField type="password" icon="/assets/Password.png" placeholder="Password" {...register("password")} />
+      <InputField type="password" icon="/assets/Password.png" placeholder="Password" {...register("password")} password/>
       <ErrorMessage message={errors.password?.message} />
 
       {errors.root?.serverError && (

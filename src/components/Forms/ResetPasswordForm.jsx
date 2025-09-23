@@ -47,25 +47,21 @@ const ResetPassword = memo(({
               icon="/assets/Password.png"
               placeholder="Current Password"
               {...register("current_password")}
+              password
             />
             <ErrorMessage message={errors.currentPassword?.message} />
           </div>
         )}
         <div>
           <InputField
-            type="password"
-            icon="/assets/Password.png"
-            placeholder="New Password"
-            {...register("password")}
+            type="password" icon="/assets/Password.png" placeholder="New Password" {...register("password")} password
           />
           <ErrorMessage message={errors.password?.message} />
         </div>
         <div>
           <InputField
-            type="password"
-            icon="/assets/Password.png"
-            placeholder="Confirm Password"
-            {...register("password_confirmation")}
+            type="password" icon="/assets/Password.png"
+            placeholder="Confirm Password" {...register("password_confirmation")} password
           />
           <ErrorMessage message={errors.confirmPassword?.message} />
         </div>

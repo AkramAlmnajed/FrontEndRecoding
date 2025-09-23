@@ -1,13 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
 import { memo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
+import api from "../api/axios";
 import ErrorMessage from '../FormElements/error_message';
 import InputField from '../FormElements/InputField';
 import SubmitButton from '../FormElements/SubmitButton';
-import api from "../api/axios"
 
 const ChangeEmail = memo(() => {
 
@@ -33,7 +32,7 @@ const ChangeEmail = memo(() => {
     async function changeEm(data) {
         setIsLoading(true);
         try {
-            const response = await api.post( 'change-email', {
+            const response = await api.post('change-email', {
                 new_email: data.email,
                 current_password: data.currentPass
             }, {
@@ -79,7 +78,7 @@ const ChangeEmail = memo(() => {
                     <ErrorMessage message={errors.email?.message} />
                 </div>
                 <div>
-                    <InputField type="password" icon="/assets/Password.png" placeholder="Current Password" {...register("currentPass")} />
+                    <InputField type="password" icon="/assets/Password.png" placeholder="Current Password" {...register("currentPass")} password />
                     <ErrorMessage message={errors.currentPass?.message} />
                 </div>
                 {serverError && (

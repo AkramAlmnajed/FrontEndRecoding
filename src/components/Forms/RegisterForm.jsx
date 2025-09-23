@@ -114,9 +114,9 @@ const RegisterForm = memo(() => {
       <ErrorMessage message={errors.fullName?.message} />
       <InputField type="email" icon="/assets/Mail.png" placeholder="Email" {...register("email")} />
       <ErrorMessage message={errors.email?.message} />
-      <InputField type="password" icon="/assets/Password.png" placeholder="Password" {...register("password")} />
+      <InputField type="password" icon="/assets/Password.png" placeholder="Password" {...register("password")} password/>
       <ErrorMessage message={errors.password?.message} />
-      <InputField type="password" icon="/assets/Password.png" placeholder="Confirm Password" {...register("confirmPassword")} />
+      <InputField type="password" icon="/assets/Password.png" placeholder="Confirm Password" {...register("confirmPassword")} password/>
       <ErrorMessage message={errors.confirmPassword?.message} />
 
       <div className="flex justify-between items-center mb-10 text-sm">
