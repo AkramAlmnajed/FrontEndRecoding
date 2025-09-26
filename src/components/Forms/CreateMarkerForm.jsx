@@ -1,9 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
+import api from "../api/axios";
 import { useMarkers } from "../context/MarkersContext";
 import ErrorMessage from "../FormElements/error_message";
 import SelectAspectSaC from "./SelectAspect";
-import api from "../api/axios";
 
 const CreateMarkerForm = ({
   aspectSelection,
@@ -115,78 +114,91 @@ const CreateMarkerForm = ({
       </div>
 
       {/* Image Upload */}
-      <div className="relative flex items-center mt-6 mb-3">
-        <img
-          src="/assets/Uplode.png"
-          alt="Upload"
-          className="absolute left-2 h-4 w-4"
-        />
-        <input
-          type="file"
-          className="hidden"
-          id="upload-images"
-          accept="image/*"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              setImages(Array.from(e.target.files));
-            }
-          }}
-        />
+      <div className="mt-6 mb-6">
         <label
           htmlFor="upload-images"
-          className="absolute left-10 text-gray-500 text-sm mt-1 cursor-pointer hover:text-gray-700"
+          className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-gray-50 transition"
         >
-          Upload Images
+          <img
+            src="/assets/Uplode.png"
+            alt="Upload"
+            className="h-6 w-6 mr-3"
+          />
+          <span className="text-gray-600 text-sm font-medium">
+            Upload Images
+          </span>
+          <input
+            type="file"
+            className="hidden"
+            id="upload-images"
+            accept="image/*"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                setImages(Array.from(e.target.files));
+              }
+            }}
+          />
         </label>
         {images.length > 0 && (
-          <div className="ml-10 mt-8">
-            <ul className="text-xs text-gray-600 space-y-1">
-              {images.map((img, index) => (
-                <li key={index} className="truncate">{img.name}</li>
-              ))}
-            </ul>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {images.map((img, index) => (
+              <div key={index} className="relative group">
+                <img
+                  src={URL.createObjectURL(img)}
+                  alt={img.name}
+                  className="w-full h-20 object-cover rounded-md border"
+                />
+                <span className="absolute bottom-1 left-1 right-1 bg-black bg-opacity-50 text-white text-xs text-center rounded px-1 truncate">
+                  {img.name}
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
       {/* PDF Upload */}
-      <div className="relative flex items-center mt-4 mb-8">
-        <img
-          src="/assets/Uplode.png"
-          alt="Upload"
-          className="absolute left-2 h-4 w-4"
-        />
-        <input
-          type="file"
-          className="hidden"
-          id="upload-pdfs"
-          accept="application/pdf"
-          multiple
-          onChange={(e) => {
-            if (e.target.files) {
-              console.log("raw selected:", e.target.files);
-              setPdfs(Array.from(e.target.files));
-            }
-          }}
-        />
+      <div className="mt-4 mb-6">
         <label
           htmlFor="upload-pdfs"
-          className="absolute left-10 text-gray-500 text-sm mt-1 cursor-pointer hover:text-gray-700"
+          className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-gray-50 transition"
         >
-          Upload PDFs
+          <img
+            src="/assets/Uplode.png"
+            alt="Upload"
+            className="h-6 w-6 mr-3"
+          />
+          <span className="text-gray-600 text-sm font-medium">
+            Upload PDFs
+          </span>
+          <input
+            type="file"
+            className="hidden"
+            id="upload-pdfs"
+            accept="application/pdf"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                console.log("raw selected:", e.target.files);
+                setPdfs(Array.from(e.target.files));
+              }
+            }}
+          />
         </label>
         {pdfs.length > 0 && (
-          <div className="ml-10 mt-8">
-            <ul className="text-xs text-gray-600 space-y-1">
-              {pdfs.map((pdf, index) => (
-                <li key={index} className="truncate">{pdf.name}</li>
-              ))}
-            </ul>
-          </div>
+          <ul className="mt-3 space-y-1 text-gray-600 text-sm">
+            {pdfs.map((pdf, index) => (
+              <li key={index} className="truncate border p-2 rounded-md bg-gray-50">
+                {pdf.name}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-      <div className="mt-4 mb-4">
+
+      {/* Error Message */}
+      <div className="mt-2">
         <ErrorMessage message={errorMessage} />
       </div>
 

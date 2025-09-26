@@ -108,6 +108,7 @@ export default function SelectAspectSaC({ onSelectionChange, initialValues = {} 
           alt="Icon"
           className="absolute left-2 h-4 w-4"
         />
+
         <select
           className="w-full mt-2 pl-8 p-2 border-b border-gray-400 text-sm bg-transparent focus:outline-none"
           value={categoryId}

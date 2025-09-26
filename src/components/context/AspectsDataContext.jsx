@@ -14,7 +14,6 @@ export const AspectDataProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     // Fetch all aspects
-
     const fetchAspects = useCallback(async () => {
         try {
             setLoading(true);
@@ -33,7 +32,6 @@ export const AspectDataProvider = ({ children }) => {
     }, [token]);
 
     // Fetch sub-aspects for a specific aspect
-
     const fetchSubAspects = async (aspectId) => {
         if (subAspects[aspectId]) return;
 

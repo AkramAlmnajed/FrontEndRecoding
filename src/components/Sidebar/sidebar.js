@@ -69,6 +69,7 @@ const Sidebar = ({
 
           {clickedMarker ? (
             <EditMarkerForm
+              key={clickedMarker?.location?.id}
               markerData={clickedMarker}
               onCancel={() => {
                 setClickedMarker(null);

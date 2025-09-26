@@ -74,6 +74,7 @@ const Home = () => {
       </button>
 
       <ViewDetailsDialog
+        key={viewedMarker?.id}
         isOpen={showDetailsDialog}
         onClose={() => {
           setShowDetailsDialog(false);

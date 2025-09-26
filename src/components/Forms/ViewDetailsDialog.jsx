@@ -1,8 +1,9 @@
 import { Icon } from '@iconify/react';
-import api from '../api/axios';
 import { useEffect, useState } from 'react';
-import DeletePopup from '../PopUp/DeletePopup';
+import api from '../api/axios';
 import { useMarkers } from '../context/MarkersContext';
+import ErrorMessage from '../FormElements/error_message';
+import DeletePopup from '../PopUp/DeletePopup';
 
 
 const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
@@ -14,9 +15,11 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
   const [locationData, setLocationData] = useState(location);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [deleteError, setDeleteError] = useState(null)
+  const [uploadError, setUploadError] = useState(null)
 
   useEffect(() => {
-    if (location && !locationData) {
+    if (location) {
       setLocationData(location);
     }
   }, [location]);
@@ -33,7 +36,10 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
   };
 
   if (!isOpen || !locationData) return null;
+
   async function uploadFilesImages(files, type) {
+    setUploadError(null);
+    setDeleteError(null);
     try {
       const formData = new FormData();
 
@@ -43,11 +49,13 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
         } else if (type === "references") {
           formData.append("references[]", file);
         }
+        console.log("Uploading type:", type, "files:", files);
+
       });
 
-      const response = await api.post(`locations/${locationData.id}/upload-files`, formData, {
+      await api.post(`locations/${locationData.id}/upload-files`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         }
       })
       const updatedData = await fetchSpecificMarker(locationData.id)
@@ -57,17 +65,19 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
     }
     catch (error) {
       if (error.response) {
-        console.log("API error:", error.response.status, error.response.data)
+        setUploadError(error.response?.data?.message)
       }
       else {
-        console.log("Request error:", error.message)
+        setUploadError(error.message)
       }
     }
   }
 
   async function deleteImage(imageId) {
+    setDeleteError(null);
+    setUploadError(null);
     try {
-      const response = await api.delete(`locations/${locationData.id}/delete-image/${imageId}`, {
+      await api.delete(`locations/${locationData.id}/delete-image/${imageId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -83,14 +93,18 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
     } catch (error) {
       if (error.response) {
         console.error("API error:", error.response.status, error.response.data);
+        setDeleteError(error.response?.data?.message)
       } else {
         console.error("Request error:", error.message);
+        setDeleteError(error.message)
       }
     }
   }
 
   async function deleteFile(referenceId) {
     try {
+      setDeleteError(null);
+      setUploadError(null);
       const response = await api.delete(`locations/${locationData.id}/delete-reference/${referenceId}`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -107,8 +121,10 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
     catch (error) {
       if (error.response) {
         console.error("API error:", error.response.status, error.response.data);
+        setDeleteError(error.response?.data?.message)
       } else {
         console.error("Request error:", error.message);
+        setDeleteError(error.message)
       }
     }
   }
@@ -333,7 +349,7 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
                   <div
                     className="relative flex items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-cyan-500 hover:bg-cyan-50 transition-colors duration-300"
                   >
-                    <input type="file" multiple accept="image" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    <input type="file" multiple accept="image/jpeg,image/png,image/jpg" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       onChange={(e) => {
                         const files = Array.from(e.target.files);
                         uploadFilesImages(files, "images")
@@ -342,6 +358,12 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
                     <Icon icon="mdi:plus" className="text-5xl text-gray-400 group-hover:text-cyan-600 transition-colors" />
                   </div>
                 </div>
+                {deleteError && deleteError.toLowerCase().includes("image") && (
+                  <ErrorMessage message={deleteError} />
+                )}
+                {uploadError && uploadError.toLowerCase().includes("image") && (
+                  <ErrorMessage message={uploadError} />
+                )}
               </div>
 
               {/* References Section */}
@@ -400,6 +422,12 @@ const ViewDetailsDialog = ({ isOpen, onClose, location }) => {
                     <Icon icon="mdi:plus" className="text-5xl text-gray-400 group-hover:text-cyan-600 transition-colors" />
                   </div>
                 </div>
+                {deleteError && deleteError.toLowerCase().includes("reference") && (
+                  <ErrorMessage message={deleteError} />
+                )}
+                {uploadError && uploadError.toLowerCase().includes("reference") && (
+                  <ErrorMessage message={uploadError} />
+                )}
               </div>
 
 
